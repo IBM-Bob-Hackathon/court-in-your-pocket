@@ -1,6 +1,12 @@
-fastapi>=0.104.1
-uvicorn[standard]>=0.24.0
-pydantic>=2.5.0
-python-dotenv>=1.0.0
-python-multipart>=0.0.6
-ibm-watsonx-ai
+# Core dependencies
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-dotenv==1.0.1
+pydantic==2.9.0
+
+# IBM watsonx dependencies (install these first to avoid pandas build issues)
+numpy>=1.26.0
+pandas>=2.1.0
+
+# IBM watsonx AI SDK
+ibm-watsonx-ai>=1.1.0
