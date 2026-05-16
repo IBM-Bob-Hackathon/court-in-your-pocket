@@ -1,0 +1,112 @@
+[
+  {
+    "id": "CON_IN_001",
+    "category": "consumer_protection",
+    "scenario": "defective_product_delivered",
+    "keywords": ["defective product", "broken item", "damaged goods", "replacement", "product failure"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Consumer Protection Act",
+    "year": 2019,
+    "section": "Section 2(10) & Section 38",
+    "plain_english": "If you buy a product that turns out to be broken, faulty, or imperfect in quality, you have the right to file a complaint to get a full refund, replacement, or repair from the seller or manufacturer.",
+    "exact_quote": "'defect' means any fault, imperfection or shortcoming in the quality, quantity, potency, purity or standard which is required to be maintained by or under any law for the time being in force or under any contract, express or implied or as is claimed by the trader in any manner whatsoever in relation to any goods.",
+    "user_rights": [
+      "Right to a free repair or complete replacement of the defective item",
+      "Right to a full financial refund if the defect cannot be fixed",
+      "Right to claim compensation for any personal injury or damage caused by the defective product"
+    ],
+    "deadline_days": 730,
+    "escalation_path": ["brand_customer_support", "national_consumer_helpline", "district_consumer_forum"],
+    "official_portal": "https://consumerhelpline.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "CON_IN_002",
+    "category": "consumer_protection",
+    "scenario": "deficiency_of_service",
+    "keywords": ["bad service", "service failure", "flight cancellation", "delayed service", "poor maintenance"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Consumer Protection Act",
+    "year": 2019,
+    "section": "Section 2(11)",
+    "plain_english": "If a service provider (like a bank, airline, telecom company, or hospital) performs poorly, delays work unreasonably, or fails to deliver what was promised, it is considered a deficiency of service, and you can claim compensation.",
+    "exact_quote": "'deficiency' means any fault, imperfection, shortcoming or inadequacy in the quality, nature and manner of performance which is required to be maintained by or under any law for the time being in force or has been undertaken to be performed by a person in pursuance of a contract or otherwise in relation to any service.",
+    "user_rights": [
+      "Right to demand the proper completion of the promised service",
+      "Right to a partial or full refund of money paid for unfulfilled services",
+      "Right to receive financial compensation for mental agony and inconvenience caused"
+    ],
+    "deadline_days": 730,
+    "escalation_path": ["service_provider_grievance_officer", "national_consumer_helpline", "district_consumer_commission"],
+    "official_portal": "https://consumerhelpline.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "CON_IN_003",
+    "category": "consumer_protection",
+    "scenario": "misleading_advertisement_or_false_claims",
+    "keywords": ["fake advertisement", "misleading ad", "false claim", "cheated by ad", "celebrity endorsement"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Consumer Protection Act",
+    "year": 2019,
+    "section": "Section 2(28) & Section 89",
+    "plain_english": "An advertisement cannot falsely describe a product, guarantee fake results, or mislead you about its nature, substance, or quality. Doing so is a punishable offense for both the manufacturer and the advertiser.",
+    "exact_quote": "'misleading advertisement' in relation to any product or service, means an advertisement, which— (i) falsely describes such product or service; or (ii) gives a false guarantee to, or is likely to mislead the consumers as to the nature, substance, quantity or quality of such product or service.",
+    "user_rights": [
+      "Right to be protected against deceptive marketing practices",
+      "Right to file a complaint directly with the Central Consumer Protection Authority (CCPA)",
+      "Right to seek a withdrawal or modification of the misleading advertisement"
+    ],
+    "deadline_days": 730,
+    "escalation_path": ["central_consumer_protection_authority", "national_consumer_helpline", "state_consumer_commission"],
+    "official_portal": "https://ccpa.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "CON_IN_004",
+    "category": "consumer_protection",
+    "scenario": "overcharging_above_mrp",
+    "keywords": ["mrp", "overcharging", "printed price", "hidden charges", "extra cost"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Legal Metrology Act & Consumer Protection Act",
+    "year": 2009,
+    "section": "Section 18 (Legal Metrology) & Section 2(47) (CPA)",
+    "plain_english": "No retail shop, restaurant, or online seller can sell a packaged commodity at a price higher than the Maximum Retail Price (MRP) printed on the package. Charging more than the MRP is an unfair trade practice.",
+    "exact_quote": "No person shall manufacture, pack, import, sell, distribute, deliver or otherwise transfer, offer, expose or possess for sale any pre-packaged commodity unless such package is in such standard quantities or number and bears thereon such declarations and particulars in such manner as may be prescribed.",
+    "user_rights": [
+      "Right to buy packaged goods at or below the printed MRP",
+      "Right to refuse any additional local taxes added on top of the MRP",
+      "Right to report overcharging directly to the Legal Metrology Department"
+    ],
+    "deadline_days": 365,
+    "escalation_path": ["merchant_escalation", "legal_metrology_inspector", "national_consumer_helpline", "district_consumer_forum"],
+    "official_portal": "https://doca.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "CON_IN_005",
+    "category": "consumer_protection",
+    "scenario": "e_commerce_refund_denial",
+    "keywords": ["online shopping", "refund denied", "e-commerce", "return policy", "fake product online"],
+    "jurisdiction": ["IN"],
+    "law_name": "Consumer Protection (E-Commerce) Rules",
+    "year": 2020,
+    "section": "Rule 4 & Rule 6",
+    "plain_english": "Online shopping apps cannot refuse a return or refund if the delivered product is damaged, late, or completely different from what you ordered. They also cannot force you to accept store credit instead of a bank refund.",
+    "exact_quote": "No e-commerce entity shall adopt any unfair trade practice, whether in the course of offer on its platform or otherwise... Every e-commerce entity shall effect take-back or recall of goods or withdrawal or discontinuation of services if such goods or services are defective, deficient or spurious.",
+    "user_rights": [
+      "Right to clear information on return, refund, exchange, and delivery timelines before purchase",
+      "Right to a complete money-back refund to the original payment source for faulty deliveries",
+      "Right to an implicit grievance redressal system within 48 hours of reporting to the platform"
+    ],
+    "deadline_days": 730,
+    "escalation_path": ["e_commerce_nodal_officer", "national_consumer_helpline", "district_consumer_commission"],
+    "official_portal": "https://consumerhelpline.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://egazette.gov.in"
+  }
+]
