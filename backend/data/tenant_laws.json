@@ -1,0 +1,178 @@
+[
+  {
+    "id": "TN_IN_002",
+    "category": "tenant",
+    "scenario": "unlawful_eviction_without_notice",
+    "keywords": ["eviction", "forced out", "kick out", "notice period", "lockout"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 21 & Section 22",
+    "plain_english": "Your landlord cannot evict you during the tenancy period without a valid legal reason, such as non-payment of rent for two months. They must give you a formal written notice and obtain an order from the Rent Court before removing you.",
+    "exact_quote": "No tenant shall be evicted from any premises let out on rent except in pursuance of an application made by the landlord on one or more of the following grounds to the Rent Court... provided that the landlord shall give notice in writing to the tenant.",
+    "user_rights": [
+      "Right to receive a mandatory written notice period before eviction proceedings",
+      "Right to reside peacefully until the Rent Court passes a formal eviction order",
+      "Right to object to arbitrary, retaliatory, or mid-contract eviction attempts"
+    ],
+    "deadline_days": 30,
+    "escalation_path": ["demand_legal_notice", "rent_authority", "rent_court"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "TN_IN_003",
+    "category": "tenant",
+    "scenario": "disconnection_of_essential_services",
+    "keywords": ["electricity cut", "water cut", "essential supplies", "harassment by landlord", "no power"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 20",
+    "plain_english": "A landlord is strictly prohibited from cutting off your electricity, water, supply lines, or other essential services, even if you are having a financial or legal dispute over rent.",
+    "exact_quote": "No landlord or tenant, as the case may be, either himself or through any person, shall cut off or withhold any essential supply or service in the premises occupied by the tenant or landlord... The Rent Authority may pass an interim order directing restoration of such essential supply.",
+    "user_rights": [
+      "Right to uninterrupted supply of water, electricity, and sanitary facilities",
+      "Right to file an emergency petition for an immediate interim restoration order",
+      "Right to claim compensation and financial penalties against a landlord who cuts off utilities"
+    ],
+    "deadline_days": 24,
+    "escalation_path": ["police_complaint_harassment", "rent_authority_emergency_petition"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "TN_IN_004",
+    "category": "tenant",
+    "scenario": "landlord_unauthorized_entry",
+    "keywords": ["privacy", "unauthorized entry", "landlord visit", "trespassing", "landlord inspection"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 15",
+    "plain_english": "Your landlord does not have the right to enter your rented home whenever they want. They must give you at least 24 hours advance notice in writing or via electronic message, and the visit must take place during reasonable daytime hours.",
+    "exact_quote": "A landlord or the property manager shall not enter the premises let out on rent without giving a prior notice of at least twenty-four hours to the tenant... and the entry shall not be before 7:00 AM and after 8:00 PM.",
+    "user_rights": [
+      "Right to personal privacy and peaceful possession of the premises",
+      "Right to receive a minimum 24-hour advance warning before any inspection or repair visit",
+      "Right to refuse entry to the landlord outside of the statutory hours of 7:00 AM to 8:00 PM"
+    ],
+    "deadline_days": 1,
+    "escalation_path": ["written_warning_email", "rent_authority"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "TN_IN_005",
+    "category": "tenant",
+    "scenario": "arbitrary_rent_increase",
+    "keywords": ["rent hike", "unfair rent increase", "increase rent", "rent revision"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 9 & Section 10",
+    "plain_english": "A landlord cannot increase your rent in the middle of a tenancy agreement unless it is explicitly written in the contract. They must give you a formal written notice 3 months before the new rent takes effect.",
+    "exact_quote": "The revision of rent between the landlord and the tenant shall be in accordance with the terms of the tenancy agreement... Where the landlord proposes to revise the rent, he shall give a notice in writing to the tenant at least three months before the revised rent becomes due.",
+    "user_rights": [
+      "Right to a stable rent price for the full duration of the active agreement",
+      "Right to receive 3 months written advance notice before any rent hike takes place",
+      "Right to approach the Rent Authority to fix a fair rent structure if the hike is extortionate"
+    ],
+    "deadline_days": 90,
+    "escalation_path": ["written_negotiation", "rent_authority_fair_rent_petition"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "TN_IN_002",
+    "category": "tenant",
+    "scenario": "unlawful_eviction_without_notice",
+    "keywords": ["eviction", "forced out", "kick out", "notice period", "lockout"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 21 & Section 22",
+    "plain_english": "Your landlord cannot evict you during the tenancy period without a valid legal reason, such as non-payment of rent for two months. They must give you a formal written notice and obtain an order from the Rent Court before removing you.",
+    "exact_quote": "No tenant shall be evicted from any premises let out on rent except in pursuance of an application made by the landlord on one or more of the following grounds to the Rent Court... provided that the landlord shall give notice in writing to the tenant.",
+    "user_rights": [
+      "Right to receive a mandatory written notice period before eviction proceedings",
+      "Right to reside peacefully until the Rent Court passes a formal eviction order",
+      "Right to object to arbitrary, retaliatory, or mid-contract eviction attempts"
+    ],
+    "deadline_days": 30,
+    "escalation_path": ["demand_legal_notice", "rent_authority", "rent_court"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "TN_IN_003",
+    "category": "tenant",
+    "scenario": "disconnection_of_essential_services",
+    "keywords": ["electricity cut", "water cut", "essential supplies", "harassment by landlord", "no power"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 20",
+    "plain_english": "A landlord is strictly prohibited from cutting off your electricity, water, supply lines, or other essential services, even if you are having a financial or legal dispute over rent.",
+    "exact_quote": "No landlord or tenant, as the case may be, either himself or through any person, shall cut off or withhold any essential supply or service in the premises occupied by the tenant or landlord... The Rent Authority may pass an interim order directing restoration of such essential supply.",
+    "user_rights": [
+      "Right to uninterrupted supply of water, electricity, and sanitary facilities",
+      "Right to file an emergency petition for an immediate interim restoration order",
+      "Right to claim compensation and financial penalties against a landlord who cuts off utilities"
+    ],
+    "deadline_days": 24,
+    "escalation_path": ["police_complaint_harassment", "rent_authority_emergency_petition"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "TN_IN_004",
+    "category": "tenant",
+    "scenario": "landlord_unauthorized_entry",
+    "keywords": ["privacy", "unauthorized entry", "landlord visit", "trespassing", "landlord inspection"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 15",
+    "plain_english": "Your landlord does not have the right to enter your rented home whenever they want. They must give you at least 24 hours advance notice in writing or via electronic message, and the visit must take place during reasonable daytime hours.",
+    "exact_quote": "A landlord or the property manager shall not enter the premises let out on rent without giving a prior notice of at least twenty-four hours to the tenant... and the entry shall not be before 7:00 AM and after 8:00 PM.",
+    "user_rights": [
+      "Right to personal privacy and peaceful possession of the premises",
+      "Right to receive a minimum 24-hour advance warning before any inspection or repair visit",
+      "Right to refuse entry to the landlord outside of the statutory hours of 7:00 AM to 8:00 PM"
+    ],
+    "deadline_days": 1,
+    "escalation_path": ["written_warning_email", "rent_authority"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "TN_IN_005",
+    "category": "tenant",
+    "scenario": "arbitrary_rent_increase",
+    "keywords": ["rent hike", "unfair rent increase", "increase rent", "rent revision"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 9 & Section 10",
+    "plain_english": "A landlord cannot increase your rent in the middle of a tenancy agreement unless it is explicitly written in the contract. They must give you a formal written notice 3 months before the new rent takes effect.",
+    "exact_quote": "The revision of rent between the landlord and the tenant shall be in accordance with the terms of the tenancy agreement... Where the landlord proposes to revise the rent, he shall give a notice in writing to the tenant at least three months before the revised rent becomes due.",
+    "user_rights": [
+      "Right to a stable rent price for the full duration of the active agreement",
+      "Right to receive 3 months written advance notice before any rent hike takes place",
+      "Right to approach the Rent Authority to fix a fair rent structure if the hike is extortionate"
+    ],
+    "deadline_days": 90,
+    "escalation_path": ["written_negotiation", "rent_authority_fair_rent_petition"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  }
+]
