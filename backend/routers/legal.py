@@ -234,8 +234,9 @@ async def analyze_legal_issue(request: AnalyzeRequest):
             return _get_out_of_scope_response()
         
         # Step 3: Load relevant legal data
+        if not category:
+            category = "out_of_scope"
         law_entries = _load_legal_data(category)
-        if not category: category = "out_of_scope"
         
         if not law_entries:
             raise HTTPException(
