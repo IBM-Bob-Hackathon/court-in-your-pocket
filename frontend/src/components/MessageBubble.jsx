@@ -24,16 +24,16 @@ const MessageBubble = ({ message, sender, timestamp }) => {
 
   if (isUser) {
     return (
-      <div 
+      <div
         className={`flex justify-end mb-2 transform transition-all duration-300 ease-out ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
         }`}
       >
-        <div className="bg-green-500 text-white rounded-2xl rounded-tr-sm px-3 py-2 max-w-[75%] shadow-md">
+        <div className="bg-amber-500 text-slate-900 rounded-2xl rounded-tr-sm px-3 py-2 max-w-[75%] shadow-md">
           <p className="text-sm text-left whitespace-pre-wrap break-words leading-relaxed mb-1">
             {message}
           </p>
-          <div className="flex items-center justify-end gap-1 text-[11px] text-white/70">
+          <div className="flex items-center justify-end gap-1 text-[11px] text-slate-700/80">
             <span>{formatTime(timestamp)}</span>
             <span className="text-[11px]">✓✓</span>
           </div>
@@ -43,17 +43,22 @@ const MessageBubble = ({ message, sender, timestamp }) => {
   }
 
   return (
-    <div 
+    <div
       className={`flex justify-start mb-2 transform transition-all duration-300 ease-out ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
       }`}
     >
-      <div className="bg-slate-700 text-white rounded-2xl rounded-tl-sm px-3 py-2 max-w-[75%] shadow-md">
-        <p className="text-sm text-left whitespace-pre-wrap break-words leading-relaxed mb-1">
-          {message}
-        </p>
-        <div className="flex items-center justify-start text-[11px] text-slate-400">
-          <span>{formatTime(timestamp)}</span>
+      <div className="flex flex-row items-end gap-2">
+        <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-bold text-sm">B</span>
+        </div>
+        <div className="bg-blue-900 border border-blue-700/40 text-white rounded-2xl rounded-tl-sm px-3 py-2 max-w-[75%] shadow-md">
+          <p className="text-sm text-left whitespace-pre-wrap break-words leading-relaxed mb-1">
+            {message}
+          </p>
+          <div className="flex items-center justify-start text-[11px] text-blue-300/70">
+            <span>{formatTime(timestamp)}</span>
+          </div>
         </div>
       </div>
     </div>

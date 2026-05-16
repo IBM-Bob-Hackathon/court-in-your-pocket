@@ -138,29 +138,50 @@ const ChatScreen = () => {
   };
 
   const startVoiceInput = () => {
-    if (!('webkitSpeechRecognition' in window)) {
-      alert('Voice input not supported in this browser. Please use Chrome or Edge.');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+      const errorMessage = {
+        sender: 'bob',
+        message: 'Voice input is only supported in Chrome or Edge. Please type your message instead.',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
       return;
     }
 
-    const recognition = new window.webkitSpeechRecognition();
+    const recognition = new SpeechRecognition();
     recognition.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
     recognition.continuous = false;
     recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
     
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setInputText(transcript);
+      setTimeout(() => {
+        handleSendMessage(transcript);
+      }, 800);
     };
 
     recognition.onerror = (event) => {
       console.error('Speech recognition error:', event.error);
       setIsListening(false);
       if (event.error === 'not-allowed') {
-        alert('Microphone access denied. Please enable microphone permissions.');
+        const errorMessage = {
+          sender: 'bob',
+          message: 'Microphone access was denied. Please allow microphone permissions in your browser settings.',
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, errorMessage]);
       }
     };
 
@@ -199,14 +220,14 @@ const ChatScreen = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-slate-900">
-      <ProgressTracker 
+    <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-slate-900">
+      <ProgressTracker
         currentStep={getProgressStep()}
         totalSteps={4}
         label={getProgressLabel()}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto min-h-0 px-3 py-4">
         <div className="max-w-4xl mx-auto space-y-4">
           {messages.map((msg, idx) => (
             <MessageBubble
@@ -231,42 +252,50 @@ const ChatScreen = () => {
         </div>
       </div>
 
-      <div className="border-t border-slate-700 bg-slate-800 shadow-2xl">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex gap-3 items-end">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={isListening ? 'Listening...' : 'Type your message...'}
-                disabled={isListening}
-                className="w-full px-5 py-3.5 bg-slate-700 text-white placeholder-slate-400 border border-slate-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-base transition-all duration-200 disabled:opacity-50"
-              />
-            </div>
+      <div className="flex-shrink-0 bg-slate-800/95 backdrop-blur-sm border-t border-slate-700/50 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] px-4 py-3">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-end gap-2 bg-slate-700/80 border border-slate-600/50 rounded-2xl px-4 py-2 focus-within:border-amber-500/60 focus-within:ring-1 focus-within:ring-amber-500/30 transition-all duration-200">
+            <textarea
+              rows={1}
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onInput={(e) => {
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 112) + 'px';
+              }}
+              onKeyPress={handleKeyPress}
+              placeholder={isListening ? '🎙️  Listening...' : 'Ask your legal question...'}
+              disabled={isListening}
+              className="flex-1 bg-transparent text-white text-base placeholder-slate-400 focus:outline-none py-1 leading-relaxed min-h-[28px] max-h-28 resize-none overflow-hidden"
+            />
             
             <button
               onClick={startVoiceInput}
               disabled={isListening}
-              className={`p-3.5 rounded-2xl transition-all duration-200 shadow-lg ${
-                isListening 
-                  ? 'bg-red-600 text-white animate-pulse shadow-red-500/50' 
-                  : 'bg-slate-700 hover:bg-slate-600 text-amber-400 hover:text-amber-300 border border-slate-600 hover:border-amber-500/50'
-              }`}
+              className={isListening
+                ? 'p-2 rounded-xl bg-red-500/20 text-red-400 animate-pulse'
+                : 'p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-600/50 transition-all duration-200'
+              }
               title="Voice input"
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
               </svg>
             </button>
             
             <button
               onClick={() => handleSendMessage(inputText)}
               disabled={!inputText.trim() || isTyping}
-              className="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 disabled:shadow-none text-base"
+              className="p-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-900 transition-all duration-200 shadow-md shadow-amber-500/30 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex-shrink-0"
+              title="Send message"
             >
-              Send
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 2L11 13"/>
+                <path d="M22 2L15 22 11 13 2 9l20-7z"/>
+              </svg>
             </button>
           </div>
         </div>
