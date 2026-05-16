@@ -1,0 +1,439 @@
+# Court in Your Pocket — Implementation Plan
+
+---
+
+## 1. Purpose
+
+*"A free AI-powered legal companion for every Indian who cannot afford a lawyer but deserves to know their rights."*
+
+Users describe their situation conversationally in English or Hindi. IBM Bob understands the context, retrieves the relevant Indian law, explains their rights with statute citations, and generates a ready-to-use legal demand letter with a step-by-step action plan.
+
+**Not a law firm. Not legal advice. A legal compass.**
+
+---
+
+## 2. Application Scope (POC)
+
+| Category | Laws Covered |
+|---|---|
+| Tenant / Landlord | Model Tenancy Act 2021, Rent Control Acts |
+| Employment / Wages | Code on Wages 2019, Industrial Disputes Act |
+| Consumer Fraud | Consumer Protection Act 2019, RBI Guidelines |
+
+**Languages:** English + Hindi
+**States covered:** KA, MH, DL + Central Acts
+
+---
+
+## 3. Architecture
+
+```
+┌──────────────────────────────────────────────────────┐
+│                USER (Mobile Browser)                  │
+└─────────────────────────┬────────────────────────────┘
+                          │ HTTPS
+┌─────────────────────────▼────────────────────────────┐
+│                  FRONTEND (React + Vite)              │
+│   Landing │ Chat UI │ Rights Screen │ Action Plan     │
+└─────────────────────────┬────────────────────────────┘
+                          │ REST API
+┌─────────────────────────▼────────────────────────────┐
+│              BACKEND (Node.js + Express)              │
+│                                                       │
+│  Session Manager │ Orchestrator │ Template Engine     │
+│                                                       │
+│  ┌──────────────────────────────────────────────┐    │
+│  │           IBM BOB AGENT LAYER                │    │
+│  │  Safety │ Intake │ Classifier │ Analysis     │    │
+│  │  Agent  │ Agent  │ Agent      │ Agent        │    │
+│  └──────────────────────────────────────────────┘    │
+└─────────────────────────┬────────────────────────────┘
+                          │
+┌─────────────────────────▼────────────────────────────┐
+│             LEGAL KNOWLEDGE BASE (JSON)               │
+│  tenant_laws.json │ employment_laws.json              │
+│  consumer_laws.json │ 3 document templates            │
+└──────────────────────────────────────────────────────┘
+```
+
+---
+
+## 4. Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite + Tailwind CSS |
+| Language support | i18next (EN/HI) |
+| Voice input | Web Speech API (browser native) |
+| PDF generation | html2pdf.js |
+| Backend | Python + Fast API |
+| IBM Bob | IBM watsonx SDK |
+| Legal knowledge base | JSON files (15 entries across 3 files) |
+| Session storage | In-memory Map (server) + localStorage (client) |
+| Hosting | Vercel (frontend) + Railway (backend) |
+
+---
+
+## 5. API Endpoints
+
+| Endpoint | Method | Input | Output |
+|---|---|---|---|
+| `/api/session/start` | POST | `{language, state}` | `{sessionId}` |
+| `/api/chat/message` | POST | `{sessionId, message}` | `{reply, stage, chips[]}` |
+| `/api/legal/analyze` | POST | `{sessionId}` | `{rights[], confidence, deadline, options[]}` |
+| `/api/action-plan/generate` | POST | `{sessionId, option}` | `{steps[]}` |
+| `/api/document/generate` | POST | `{sessionId}` | `{documentText}` |
+
+---
+
+## 6. Frontend — 4 Screens
+
+### Screen 0 — Landing + Onboarding
+- "Get Started" CTA
+- State selector (KA / MH / DL)
+- Language toggle EN/HI (persists in localStorage)
+- One-line disclaimer: *"Not a law firm. A legal compass."*
+
+### Screen 1 — Chat Interface
+- WhatsApp-style message bubbles
+- Bob typing indicator animation
+- Voice input via Web Speech API
+- Tappable chip options for Yes / No / Not Sure questions
+- Auto-scroll to latest message
+- Progress tracker: *"Step 2 of 4 — Understanding your situation"*
+- Safety block screen: full red card for criminal/dangerous input
+
+### Screen 2 — Your Rights
+- Situation summary card (collapsible — what Bob understood)
+- Per law finding card:
+  - Plain English explanation (bold)
+  - Exact statute + section (smaller, grey)
+  - Last verified date badge
+  - "See original law text ▼" expandable
+- Confidence badge: ●●●●● green → ●●○○○ red
+- Deadline alert banner: *"You have ~18 days to act"*
+- Three options: A (demand letter), B (file complaint), C (free legal aid)
+- "Build My Action Plan" CTA button
+
+### Screen 3 — Action Plan + Document
+- Numbered checklist (tap to mark complete, time estimate per step)
+- Document preview card (formatted, scrollable)
+- Download as PDF (html2pdf.js)
+- WhatsApp share button (`wa.me` prefilled)
+- National Consumer Helpline: 1800-11-4000
+- Link to edaakhil.nic.in
+
+### Additional UI Components
+| Component | Description |
+|---|---|
+| Safety Block Screen | Full red card, hard stop, shows emergency contacts |
+| Emergency Panel | Triggers for out-of-scope — shows free legal aid links |
+| Confidence Badge | ●●●●● per legal claim |
+| Language Toggle | EN/HI top-right, persists session |
+| Jurisdiction Selector | First load only — India → state |
+
+---
+
+## 7. Backend — Session & Pipeline
+
+### Session Object
+```json
+{
+  "sessionId": "uuid",
+  "language": "en",
+  "state": "KA",
+  "category": null,
+  "conversationHistory": [],
+  "extractedFacts": {
+    "issue": null,
+    "partyName": null,
+    "amount": null,
+    "dates": [],
+    "location": null
+  },
+  "stage": "intake | analysis | document | complete",
+  "safetyFlagged": false,
+  "confidenceScore": null
+}
+```
+
+### Request Processing Pipeline
+```
+Incoming user message
+        │
+        ▼
+1. SAFETY CHECK (Bob)
+   ├── Criminal/dangerous? → HARD BLOCK
+   └── Safe → Continue
+        │
+        ▼
+2. STAGE ROUTER
+   ├── intake    → extract facts, ask next question
+   ├── analysis  → run RAG, build rights response
+   ├── document  → generate action plan + fill template
+   └── complete  → offer next steps
+        │
+        ▼
+3. FACT EXTRACTOR (Bob)
+   Pulls: issue type, location, dates, amounts, names
+        │
+        ▼
+4. CATEGORY CLASSIFIER (Bob)
+   → tenant | employment | consumer | out_of_scope
+        │
+        ▼
+5. RAG RETRIEVAL
+   Keyword match on JSON files → returns law entries
+        │
+        ▼
+6. LEGAL ANALYSIS (Bob)
+   Input: facts + law entries
+   Output: plain English rights + confidence score
+        │
+        ▼
+7. RESPONSE FORMATTER
+   Structures into card format with citations + badges
+        │
+        ▼
+Response → Frontend
+```
+
+---
+
+## 8. IBM Bob Agents
+
+### Agent 1 — Safety Guardrail
+- Runs on **every message** before anything else
+- Prompt: *"You are a safety classifier. Detect if this message involves criminal activity, evidence tampering, or self-harm. Return JSON: `{safe: bool, emergency: bool}`"*
+- On unsafe: hard block, mark `session.safetyFlagged = true`, show emergency contacts
+- Cost: ~0.3 coins/message
+
+### Agent 2 — Intake & Fact Extractor
+- Conducts the intake conversation, one question at a time
+- Extracts: issue type, location, dates, amounts, party names
+- Switches stage to `analysis` once 4–5 facts confirmed
+- Prompt: *"You are a legal intake assistant. Extract facts from the conversation. Ask ONE clarifying question at a time. Do not give legal opinions yet."*
+- Cost: ~1–2 coins/turn
+
+### Agent 3 — Category Classifier
+- Input: extracted facts
+- Output: `{category: "tenant|employment|consumer|out_of_scope", sub_scenario: string}`
+- If out of scope: surface free legal aid contacts, stop pipeline
+- Cost: ~0.5 coins/call
+
+### Agent 4 — Legal Analysis
+- Input: fact object + retrieved law JSON entries
+- Output: plain English rights explanation, confidence score (1–5), deadline in days
+- Prompt: *"Given these specific Indian laws and user facts, explain the user's rights in plain English. Cite exact section. Return confidence score 1–5. Never invent laws not in the provided data."*
+- Cost: ~2–3 coins/call
+
+### Agent 5 — Action Plan
+- Input: category + sub-scenario + chosen option
+- Output: 4–5 numbered steps with time estimates
+- Prompt: *"Generate a step-by-step action plan for an Indian user with this legal situation. 4–5 steps max. Include time estimate per step. Be specific and actionable."*
+- Cost: ~1–2 coins/call
+
+### Document Generation — Zero Bob Coins
+- Reads matching template file
+- Replaces all `{{placeholders}}` with `session.extractedFacts`
+- Pure string replacement — no Bob call
+- Cost: **0 coins**
+
+---
+
+## 9. Legal Knowledge Base
+
+**3 JSON files, 5 scenarios each = 15 total entries**
+
+Stored in data:
+- `tenant_laws.json`
+- `employment_laws.json`
+- `consumer_laws.json`
+
+Each entry structure:
+```json
+{
+  "id": "TN_IN_001",
+  "category": "tenant",
+  "scenario": "security_deposit_not_returned",
+  "keywords": ["deposit", "security deposit", "refund"],
+  "jurisdiction": ["KA", "MH", "DL", "IN"],
+  "law_name": "Model Tenancy Act",
+  "year": 2021,
+  "section": "Section 11",
+  "plain_english": "...",
+  "exact_quote": "...",
+  "user_rights": [],
+  "deadline_days": 90,
+  "escalation_path": ["demand_letter", "rent_authority", "district_court"],
+  "official_portal": "https://mohua.gov.in",
+  "last_verified": "2026-05-01",
+  "source_url": "https://indiacode.nic.in/..."
+}
+```
+
+**3 demand letter templates** stored in `/templates/`:
+- `template_demand_letter_tenant.txt`
+- `template_demand_letter_employment.txt`
+- `template_demand_letter_consumer.txt`
+
+Placeholders: `{{user_name}}`, `{{user_address}}`, `{{opponent_name}}`, `{{issue_description}}`, `{{law_name}}`, `{{section}}`, `{{exact_quote}}`, `{{demand}}`, `{{deadline_days}}`, `{{date}}`, `{{user_contact}}`
+
+---
+
+## 10. Conversation Handling
+
+| Input Type | Detection | Bob's Behavior |
+|---|---|---|
+| Normal legal issue | Default | Proceeds with intake questions |
+| Criminal / dangerous | Safety Agent | Hard block, emergency contacts shown |
+| Out of scope | Classifier null | Routes to free legal aid, stops |
+| Vague / unclear | Low confidence | Asks ONE clarifying question |
+| Emotional / distressed | Sentiment keywords | Acknowledges first, then proceeds |
+| Hindi input | Language detected | Responds in Hindi throughout |
+| Mid-conversation topic switch | New category detected | Asks: *"Should I refocus on [X]?"* |
+| User corrects Bob | Edit trigger | Re-extracts facts with correction |
+
+- Full conversation history passed on every Bob call
+- Session expires after 30 minutes of inactivity
+- Max 5–6 intake questions before switching to analysis
+
+---
+
+## 11. Keeping Legal Content Fresh
+
+- Every JSON entry has `last_verified` date shown as badge in UI
+- < 3 months → Green: *"Recently verified"*
+- 3–6 months → Amber: *"Verify for recent changes"*
+- \> 6 months → Red: *"Confirm with official source"*
+- Every rights card links to the live official government source URL
+- Users can always verify directly — we never hide the source
+
+---
+
+## 12. End-to-End Flow
+
+```
+User opens app
+      │
+      ▼
+Selects: India → Karnataka → English
+      │
+      ▼
+Bob: "Namaste! What legal issue are you facing today?"
+      │
+      ▼
+User: "My landlord is not returning my 2 months deposit"
+      │
+      ▼
+Safety check ✓ → Fact extraction begins
+Bob: "How long ago did you move out?"
+      │
+      ▼
+User: "About 6 weeks ago"
+Bob: "Did you have a written rent agreement?"
+      │
+      ▼
+User: "Yes"
+      │
+      ▼
+Classifier → tenant / security_deposit_not_returned
+RAG → fetches TN_IN_001
+Legal Analysis Agent → builds rights card
+      │
+      ▼
+Screen 2:
+  Law: Model Tenancy Act 2021, Section 11
+  Confidence: ●●●●○
+  Deadline: 18 days remaining
+  Options: A / B / C
+      │
+      ▼
+User taps: "Build My Action Plan"
+      │
+      ▼
+Action Plan Agent → 4 steps generated
+Template Engine → demand letter filled (0 coins)
+      │
+      ▼
+Screen 3:
+  4-step checklist
+  Demand letter preview
+  Download PDF + WhatsApp share
+  edaakhil.nic.in link
+      ✓
+```
+
+---
+
+## 13. Demo Script (3 Minutes)
+
+```
+0:00  "You're a renter in Bangalore. Landlord won't return
+       your ₹40,000 deposit. You can't afford a lawyer.
+       What do you do?"
+
+0:30  Open app → Karnataka → English
+      Bob: "Namaste! What legal issue are you facing today?"
+
+0:45  Type: "My landlord is not returning my deposit"
+      Bob asks 3 smart questions
+
+1:30  Rights screen:
+      Model Tenancy Act 2021, Section 11
+      Confidence: ●●●●○  |  Deadline: 18 days
+
+2:00  Tap "Build My Action Plan"
+      4 steps + demand letter pre-filled
+      Download PDF → WhatsApp share
+
+2:30  "This took 90 seconds.
+       A lawyer: 3 days, ₹5,000.
+       IBM Bob: free, instant, in your language."
+
+3:00  Done.
+```
+---
+
+## 14. Project Structure 
+
+court-in-your-pocket/
+├── frontend/                  # React + Vite app
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── screens/
+│   │   ├── context/
+│   │   ├── i18n/
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/                   # Python + FastAPI
+│   ├── main.py                # FastAPI app entry point
+│   ├── routers/
+│   │   ├── session.py         # /api/session/start
+│   │   ├── chat.py            # /api/chat/message
+│   │   ├── legal.py           # /api/legal/analyze
+│   │   ├── action_plan.py     # /api/action-plan/generate
+│   │   └── document.py        # /api/document/generate
+│   ├── agents/
+│   │   ├── safety_agent.py
+│   │   ├── intake_agent.py
+│   │   ├── classifier_agent.py
+│   │   ├── analysis_agent.py
+│   │   └── action_plan_agent.py
+│   ├── data/
+│   │   ├── tenant_laws.json
+│   │   ├── employment_laws.json
+│   │   └── consumer_laws.json
+│   ├── templates/
+│   │   ├── template_demand_letter_tenant.txt
+│   │   ├── template_demand_letter_employment.txt
+│   │   └── template_demand_letter_consumer.txt
+│   ├── session_store.py       # In-memory session Map
+│   ├── requirements.txt
+│   └── .env                   # IBM Bob API keys
+│
+├── README.md
+└── .gitignore

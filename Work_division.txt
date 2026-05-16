@@ -1,0 +1,245 @@
+# Court in Your Pocket — Rebalanced 4-Developer Work Breakdown
+
+**Every developer: 1 frontend screen + backend routers + at least 1 IBM Bob agent**
+
+---
+
+## Developer 1 — Landing + Session + Safety Agent
+
+### Frontend
+**Screen 0 — Landing + Onboarding**
+- "Get Started" CTA button
+- State selector dropdown (KA / MH / DL)
+- Language toggle EN/HI (persists in localStorage)
+- Disclaimer: *"Not a law firm. A legal compass."*
+- Navigation to Chat screen on start
+
+**App Shell (shared foundation)**
+- React Router setup + all route definitions (`/` → `/chat` → `/rights` → `/action`)
+- Global state via Context/Zustand: holds `sessionId`, `language`, `state`, `stage`
+- Tailwind theme: dark navy + gold accent, responsive mobile-first
+- Global error boundary
+
+### Backend
+- `POST /api/session/start`
+  - Creates session with UUID, initializes in session store
+  - Returns `{sessionId}`
+- `session_store.py`
+  - In-memory Python dict
+  - `create_session()`, `get_session()`, `update_session()`
+  - 30 min expiry logic
+
+### IBM Bob Agent
+- **Safety Guardrail Agent** (`safety_agent.py`)
+  - Prompt: *"You are a safety classifier. Detect if this message involves criminal activity, evidence tampering, or self-harm. Return JSON: `{safe: bool, emergency: bool}`"*
+  - Called on every message before any other processing
+  - Sets `session.safetyFlagged = true` if unsafe
+
+### Mock to Publish Day 1
+```json
+// POST /api/session/start
+{ "sessionId": "550e8400-e29b-41d4-a716-446655440000" }
+```
+
+### Consumes Mocks From
+- Developer 2: `/api/chat/message`
+
+---
+
+## Developer 2 — Chat Interface + Chat API + Intake Agent
+
+### Frontend
+**Screen 1 — Chat Interface**
+- WhatsApp-style message bubbles (user + Bob)
+- Bob typing indicator animation
+- Voice input via Web Speech API
+- Tappable chip options (Yes / No / Not Sure)
+- Auto-scroll to latest message
+- Progress tracker: *"Step 2 of 4 — Understanding your situation"*
+- Safety block screen: full red card + emergency contacts (triggered by `safetyBlocked: true`)
+- Emergency panel: shows free legal aid links when out-of-scope detected
+
+### Backend
+- `POST /api/chat/message`
+  - Input: `{sessionId, message}`
+  - Calls Safety Agent first → if blocked, return hard stop
+  - Routes to Intake Agent or Analysis based on `session.stage`
+  - Manages `conversationHistory` array (passed to Bob on every call)
+  - Stage machine: `intake → analysis → document → complete`
+  - Returns `{reply, stage, chips[], safetyBlocked}`
+
+### IBM Bob Agent
+- **Intake & Fact Extractor Agent** (`intake_agent.py`)
+  - Prompt: *"You are a legal intake assistant. Extract facts from the conversation. Ask ONE clarifying question at a time. Do not give legal opinions yet."*
+  - Extracts: issue type, location, dates, amounts, party names
+  - Updates `session.extractedFacts` after every turn
+  - Switches stage to `analysis` after 4–5 facts confirmed
+
+### Mock to Publish Day 1
+```json
+// POST /api/chat/message
+{
+  "reply": "Namaste! What legal issue are you facing today?",
+  "stage": "intake",
+  "chips": [],
+  "safetyBlocked": false
+}
+```
+
+### Consumes Mocks From
+- Developer 1: `/api/session/start`
+- Developer 3: `/api/legal/analyze`
+
+---
+
+## Developer 3 — Rights Screen + Legal Analysis + Classifier + Analysis Agents
+
+### Frontend
+**Screen 2 — Your Rights**
+- Situation summary card (collapsible — what Bob understood)
+- Per law finding card:
+  - Plain English explanation (bold)
+  - Exact statute + section (grey, smaller)
+  - Last verified date badge (green / amber / red)
+  - "See original law text ▼" expandable
+- Confidence badge: ●●●●● green → ●●○○○ red
+- Deadline alert banner: *"You have ~X days to act"*
+- Three option cards: A (demand letter), B (file complaint), C (free legal aid)
+- "Build My Action Plan" CTA button
+
+### Backend
+- `POST /api/legal/analyze`
+  - Runs Classifier Agent → RAG retrieval → Analysis Agent
+  - Returns `{rights[], confidence, deadline, options[]}`
+- `GET /api/legal/resources`
+  - Returns state-specific helplines, legal aid centers, portals
+- **RAG Retrieval Logic** (inside `legal.py`)
+  - Keyword match against JSON files by category + state
+  - `retrieve_laws(category, keywords, state) -> law_entries[]`
+
+### IBM Bob Agents
+- **Classifier Agent** (`classifier_agent.py`)
+  - Prompt: *"Classify this legal issue into: tenant, employment, consumer, or out_of_scope. Return JSON: `{category: string, sub_scenario: string}`"*
+  - Input: `session.extractedFacts`
+  - If out_of_scope: return legal aid contacts, stop pipeline
+
+- **Legal Analysis Agent** (`analysis_agent.py`)
+  - Prompt: *"Given these specific Indian laws and user facts, explain the user's rights in plain English. Cite exact section. Return confidence score 1–5. Never invent laws not in the provided data."*
+  - Input: extracted facts + retrieved law JSON entries
+  - Output: plain English rights, confidence score, deadline in days
+
+### Mock to Publish Day 1
+```json
+// POST /api/legal/analyze
+{
+  "rights": [{
+    "law_name": "Model Tenancy Act 2021",
+    "section": "Section 11",
+    "plain_english": "Your landlord must return your security deposit within 1 month of vacating.",
+    "exact_quote": "The landlord shall refund the security deposit...",
+    "confidence": 4,
+    "last_verified": "2026-05-01",
+    "source_url": "https://indiacode.nic.in/..."
+  }],
+  "confidence": 4,
+  "deadline": 18,
+  "options": [
+    {"id": "A", "label": "Send demand letter"},
+    {"id": "B", "label": "File complaint"},
+    {"id": "C", "label": "Free legal aid"}
+  ]
+}
+```
+
+### Consumes Mocks From
+- Developer 1: `/api/session/start`
+- Developer 2: `/api/chat/message`
+
+---
+
+## Developer 4 — Action Plan Screen + Document API + Action Plan Agent + Legal Data
+
+### Frontend
+**Screen 3 — Action Plan + Document**
+- Numbered checklist (tap to mark complete, time estimate per step)
+- Document preview card (formatted, scrollable)
+- Download as PDF button (html2pdf.js)
+- WhatsApp share button (`wa.me` prefilled)
+- National Consumer Helpline: 1800-11-4000
+- Link to edaakhil.nic.in
+
+**i18n Setup (shared across all screens)**
+- `i18n/en.json` + `i18n/hi.json` translation files
+- Translation keys for all UI text
+- Language switcher logic (updates i18next, persists to localStorage)
+- All text wrapped in `t()` calls — coordinate key names with other devs
+
+### Backend
+- `POST /api/action-plan/generate`
+  - Input: `{sessionId, option}`
+  - Calls Action Plan Agent
+  - Returns `{steps: [{number, description, timeEstimate}]}`
+- `POST /api/document/generate` — **zero Bob coins**
+  - Loads template by `session.category`
+  - Replaces all `{{placeholders}}` with `session.extractedFacts`
+  - Returns `{documentText}`
+
+**Legal Data Files** (place in `backend/data/`)
+- `tenant_laws.json` — 5 scenarios
+- `employment_laws.json` — 5 scenarios
+- `consumer_laws.json` — 5 scenarios
+
+**Demand Letter Templates** (place in `backend/templates/`)
+- `template_demand_letter_tenant.txt`
+- `template_demand_letter_employment.txt`
+- `template_demand_letter_consumer.txt`
+
+### IBM Bob Agent
+- **Action Plan Agent** (`action_plan_agent.py`)
+  - Prompt: *"Generate a step-by-step action plan for an Indian user with this legal situation. 4–5 steps max. Include time estimate per step. Be specific and actionable."*
+  - Input: category + sub_scenario + chosen option (A/B/C)
+  - Output: 4–5 numbered steps with time estimates
+
+### Mock to Publish Day 1
+```json
+// POST /api/action-plan/generate
+{
+  "steps": [
+    {"number": 1, "description": "Send demand letter via registered post", "timeEstimate": "30 min"},
+    {"number": 2, "description": "Wait 15 days for landlord response", "timeEstimate": "15 days"},
+    {"number": 3, "description": "File complaint with Rent Authority if no response", "timeEstimate": "2 hours"},
+    {"number": 4, "description": "Attend hearing with all documents", "timeEstimate": "1 day"}
+  ]
+}
+
+// POST /api/document/generate
+{
+  "documentText": "To,\n[Landlord Name]\n...\nSubject: Demand for Return of Security Deposit\n..."
+}
+```
+
+### Consumes Mocks From
+- Developer 1: `/api/session/start`
+- Developer 3: `/api/legal/analyze`
+
+---
+
+## Coverage Summary
+
+| | Dev 1 | Dev 2 | Dev 3 | Dev 4 |
+|---|---|---|---|---|
+| **Frontend Screen** | Landing + App Shell | Chat Interface | Rights Screen | Action Plan + Document |
+| **i18n** | — | — | — | ✅ Owns |
+| **Backend Routers** | `/session/start` | `/chat/message` | `/legal/analyze` + `/legal/resources` | `/action-plan/generate` + `/document/generate` |
+| **Shared Backend** | `session_store.py` | Stage orchestrator | RAG retrieval | Template engine + legal data |
+| **IBM Bob Agents** | Safety Agent | Intake Agent | Classifier + Analysis Agent | Action Plan Agent |
+| **Agents count** | 1 | 1 | 2 | 1 |
+
+---
+
+## Why This Split Is Balanced
+
+- **Every developer** touches React frontend + FastAPI backend + IBM Bob
+- **No one is blocked** — all 4 can work from Day 1 using published mocks
+- Developer 3 gets 2 agents because Classifier and Analysis are tightly coupled — one feeds directly into the other, making it a single logical unit
+- Developer 4 compensates with legal data files + templates + i18n setup which are medium effort tasks
