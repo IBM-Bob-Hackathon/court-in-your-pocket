@@ -110,16 +110,13 @@ def _parse_classification_response(response_text: str) -> Dict:
                 if result["category"] in valid_categories:
                     return result
         
-        # If parsing fails or validation fails, return fallback
-        print(f"Warning: Failed to parse classification response: {response_text}")
-        return {"category": "out_of_scope", "sub_scenario": "unknown"}
+        # If parsing fails or validation fails, raise exception
+        raise ValueError(f"Failed to parse classification response: {response_text[:100]}")
         
     except json.JSONDecodeError as e:
-        print(f"JSON decode error: {e}")
-        return {"category": "out_of_scope", "sub_scenario": "unknown"}
+        raise ValueError(f"JSON decode error: {e}")
     except Exception as e:
-        print(f"Unexpected error parsing classification: {e}")
-        return {"category": "out_of_scope", "sub_scenario": "unknown"}
+        raise ValueError(f"Unexpected error parsing classification: {e}")
 
 
 async def classify_issue(facts: Dict) -> Dict:
@@ -172,13 +169,14 @@ async def classify_issue(facts: Dict) -> Dict:
             response_text = str(response)
         
         # Parse and return classification
-        classification = _parse_classification_response(response_text)
-        
-        print(f"Classification result: {classification}")
-        return classification
+        try:
+            classification = _parse_classification_response(response_text)
+            return classification
+        except Exception as parse_error:
+            # Return safe fallback on parsing error
+            return {"category": "out_of_scope", "sub_scenario": "unknown"}
         
     except Exception as e:
-        print(f"Error in classify_issue: {e}")
         # Return safe fallback on any error
         return {"category": "out_of_scope", "sub_scenario": "unknown"}
 

@@ -287,20 +287,15 @@ async def analyze_rights(facts: Dict, law_entries: List[Dict], language="en") ->
         # Try to parse the response
         try:
             analysis = _parse_analysis_response(response_text)
-            print(f"Analysis result: {json.dumps(analysis, indent=2)}")
             return analysis
         except Exception as parse_error:
-            print(f"Failed to parse Bob's response, using fallback: {parse_error}")
             # Use fallback - format law_entries directly
             fallback = _create_fallback_response(law_entries)
-            print(f"Fallback result: {json.dumps(fallback, indent=2)}")
             return fallback
         
     except Exception as e:
-        print(f"Error in analyze_rights: {e}")
         # Return fallback on any error
         fallback = _create_fallback_response(law_entries)
-        print(f"Error fallback result: {json.dumps(fallback, indent=2)}")
         return fallback
 
 

@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
+// Constants
+const MS_PER_MONTH = 1000 * 60 * 60 * 24 * 30;
+const VERIFICATION_RECENT_THRESHOLD = 3; // months
+const VERIFICATION_WARNING_THRESHOLD = 6; // months
+
 const RightsScreen = () => {
   const navigate = useNavigate();
   const { sessionId, language } = useAppContext();
@@ -44,7 +49,7 @@ const RightsScreen = () => {
     };
 
     fetchRights();
-  }, [sessionId]);
+  }, [sessionId, language]);
 
   const toggleRightExpansion = (index) => {
     setExpandedRights(prev => ({
@@ -76,15 +81,25 @@ const RightsScreen = () => {
 
   const getVerificationBadge = (dateString) => {
     const lastVerified = new Date(dateString);
+    
+    // Validate date
+    if (isNaN(lastVerified.getTime())) {
+      return (
+        <span className="text-xs px-2 py-1 rounded bg-gray-900 text-gray-400">
+          Date unavailable
+        </span>
+      );
+    }
+    
     const now = new Date();
-    const monthsDiff = (now - lastVerified) / (1000 * 60 * 60 * 24 * 30);
+    const monthsDiff = (now - lastVerified) / MS_PER_MONTH;
 
     let bgColor, textColor, label;
-    if (monthsDiff < 3) {
+    if (monthsDiff < VERIFICATION_RECENT_THRESHOLD) {
       bgColor = 'bg-green-900';
       textColor = 'text-green-300';
       label = 'Recently verified';
-    } else if (monthsDiff < 6) {
+    } else if (monthsDiff < VERIFICATION_WARNING_THRESHOLD) {
       bgColor = 'bg-amber-900';
       textColor = 'text-amber-300';
       label = 'Verify for recent changes';

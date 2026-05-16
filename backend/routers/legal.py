@@ -15,6 +15,9 @@ from agents.analysis_agent import analyze_rights
 
 router = APIRouter(prefix="/api/legal", tags=["legal"])
 
+# Constants
+FALLBACK_LAW_ENTRIES_COUNT = 2
+
 
 # Pydantic Models
 class AnalyzeRequest(BaseModel):
@@ -232,6 +235,7 @@ async def analyze_legal_issue(request: AnalyzeRequest):
         
         # Step 3: Load relevant legal data
         law_entries = _load_legal_data(category)
+        if not category: category = "out_of_scope"
         
         if not law_entries:
             raise HTTPException(
@@ -247,10 +251,10 @@ async def analyze_legal_issue(request: AnalyzeRequest):
             issue_text
         )
         
-        # If no keyword match, use first 2 entries as fallback
+        # If no keyword match, use first entries as fallback
         if not matched_entries:
-            print(f"No keyword match found, using fallback (first 2 entries)")
-            matched_entries = law_entries[:2]
+            print(f"No keyword match found, using fallback (first {FALLBACK_LAW_ENTRIES_COUNT} entries)")
+            matched_entries = law_entries[:FALLBACK_LAW_ENTRIES_COUNT]
         
         # Step 5: Analyze rights using AI
         analysis_result = await analyze_rights(extracted_facts, matched_entries, request.language)
