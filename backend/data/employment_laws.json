@@ -1,0 +1,157 @@
+[
+  {
+    "id": "EMP_IN_001",
+    "category": "employment",
+    "scenario": "delayed_or_unpaid_wages",
+    "keywords": ["salary", "wages", "unpaid salary", "delayed pay", "deductions"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Payment of Wages Act",
+    "year": 1936,
+    "section": "Section 5",
+    "plain_english": "Your employer must pay your wages on time. For companies with fewer than 1,000 workers, wages must be paid by the 7th day of the following month. For larger companies, it must be paid by the 10th day.",
+    "exact_quote": "The wages of every person employed upon or in any railway, factory or industrial or other establishment upon or in which less than one thousand persons are employed, shall be paid before the expiry of the seventh day... and in any other case before the expiry of the tenth day.",
+    "user_rights": [
+      "Right to receive wages within the statutory monthly deadline",
+      "Right to timely final settlement within 2 days of termination",
+      "Right against unauthorized or arbitrary financial deductions"
+    ],
+    "deadline_days": 30,
+    "escalation_path": ["internal_hr_grievance", "demand_legal_notice", "labour_commissioner", "labour_court"],
+    "official_portal": "https://labour.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "EMP_IN_002",
+    "category": "employment",
+    "scenario": "maternity_leave_denial",
+    "keywords": ["maternity", "pregnancy", "leave", "paid leave", "childbirth"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Maternity Benefit Act",
+    "year": 1961,
+    "section": "Section 4 & Section 5",
+    "plain_english": "An eligible woman employee is entitled to 26 weeks of fully paid maternity leave. Your employer cannot ask you to work during the 6 weeks immediately following childbirth or miscarriage.",
+    "exact_quote": "Subject to the provisions of this Act, every woman shall be entitled to, and her employer shall be liable for, the payment of maternity benefit at the rate of the average daily wage for the period of her actual absence... maximum period for which any woman shall be entitled to maternity benefit shall be twenty-six weeks.",
+    "user_rights": [
+      "Right to 26 weeks of paid maternity leave for the first two children",
+      "Right to medical bonus if no pre-natal or post-natal care is provided",
+      "Right to immunity from dismissal or discharge during maternity leave"
+    ],
+    "deadline_days": 60,
+    "escalation_path": ["internal_posh_hr", "legal_notice", "labour_inspector", "industrial_tribunal"],
+    "official_portal": "https://labour.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "EMP_IN_003",
+    "category": "employment",
+    "scenario": "non_payment_of_gratuity",
+    "keywords": ["gratuity", "retirement", "resignation bonus", "5 years service", "exit pay"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Payment of Gratuity Act",
+    "year": 1972,
+    "section": "Section 4",
+    "plain_english": "If you complete 5 continuous years of service with an employer, you are entitled to a lump-sum gratuity payment upon resignation, retirement, or termination.",
+    "exact_quote": "Gratuity shall be payable to an employee on the termination of his employment after he has rendered continuous service for not less than five years, (a) on his superannuation, or (b) on his retirement or resignation, or (c) on his death or disablement due to accident or disease.",
+    "user_rights": [
+      "Right to receive gratuity within 30 days of it becoming payable",
+      "Right to interest on delayed gratuity payments",
+      "Right to nominate a family member to receive funds in case of death"
+    ],
+    "deadline_days": 30,
+    "escalation_path": ["form_i_application", "controlling_authority_gratuity", "appellate_authority"],
+    "official_portal": "https://labour.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "EMP_IN_004",
+    "category": "employment",
+    "scenario": "provident_fund_withholding",
+    "keywords": ["pf", "provident fund", "epfo", "epf contribution", "pension"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Employees' Provident Funds and Miscellaneous Provisions Act",
+    "year": 1952,
+    "section": "Section 6",
+    "plain_english": "Your employer must match your 12% basic salary contribution to the Employee Provident Fund (EPF) and deposit it regularly into your EPFO account.",
+    "exact_quote": "The contribution which shall be paid by the employer to the Fund shall be twelve per cent. of the basic wages, dearness allowance and retaining allowance (if any) for the time being payable to each of the employees, and the employees' contribution shall be equal to the contribution payable by the employer.",
+    "user_rights": [
+      "Right to regular monthly deposits into the EPFO portal",
+      "Right to view transparent monthly statement logs via Universal Account Number",
+      "Right to withdraw accumulated funds during periods of unemployment"
+    ],
+    "deadline_days": 15,
+    "escalation_path": ["epfo_grievance_portal", "regional_pf_commissioner", "central_government_tribunal"],
+    "official_portal": "https://epfindia.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "EMP_IN_005",
+    "category": "employment",
+    "scenario": "wrongful_termination_without_notice",
+    "keywords": ["termination", "fired", "layoff", "retrenchment", "severance pay"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Industrial Disputes Act",
+    "year": 1947,
+    "section": "Section 25F",
+    "plain_english": "If you have worked continuously for one year, your employer cannot terminate your services without giving you one month's written notice explaining the reason, or paying you wages instead of that notice period.",
+    "exact_quote": "No workman employed in any industry who has been in continuous service for not less than one year under an employer shall be retrenched by that employer until— (a) the workman has been given one month’s notice in writing indicating the reasons for retrenchment and the period of notice has expired, or the workman has been paid in lieu of such notice, wages for the period of the notice.",
+    "user_rights": [
+      "Right to receive 1 month written notice or equivalent pay before termination",
+      "Right to retrenchment compensation equal to 15 days average pay for every completed year of service",
+      "Right to challenge arbitrary dismissal or unfair labor practices"
+    ],
+    "deadline_days": 90,
+    "escalation_path": ["demand_letter", "conciliation_officer", "labour_court_tribunal"],
+    "official_portal": "https://labour.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "EMP_IN_006",
+    "category": "employment",
+    "scenario": "workplace_sexual_harassment",
+    "keywords": ["posh", "harassment", "hostile work environment", "sexual harassment", "safety at work"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act",
+    "year": 2013,
+    "section": "Section 4 & Section 9",
+    "plain_english": "Every company with 10 or more employees must set up an Internal Committee (IC) to handle sexual harassment complaints. An aggrieved woman can file a formal complaint with this committee within 3 months of the incident.",
+    "exact_quote": "Every employer of a workplace shall, by an order in writing, constitute a Committee to be known as the 'Internal Complaints Committee'... Any aggrieved woman may make, in writing, a complaint of sexual harassment at workplace to the Internal Committee if so constituted... within a period of three months from the date of incident.",
+    "user_rights": [
+      "Right to a safe, non-hostile working environment free from harassment",
+      "Right to file a confidential, written complaint within 90 days",
+      "Right to protection against retaliation or victimization for reporting",
+      "Right to request interim relief such as a transfer or paid leave up to 3 months during inquiry"
+    ],
+    "deadline_days": 90,
+    "escalation_path": ["internal_committee_complaint", "local_committee_district_officer", "police_fir_under_bns", "industrial_tribunal"],
+    "official_portal": "https://wcd.nic.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
+    "id": "EMP_IN_007",
+    "category": "employment",
+    "scenario": "overtime_compensation_denial",
+    "keywords": ["overtime", "extra hours", "ot pay", "double wages", "working hours"],
+    "jurisdiction": ["IN"],
+    "law_name": "The Factories Act",
+    "year": 1948,
+    "section": "Section 59",
+    "plain_english": "If you work more than 9 hours in a day or more than 48 hours in a week, you are legally entitled to receive overtime pay calculated at twice your regular hourly wage rate.",
+    "exact_quote": "Where a worker works in a factory for more than nine hours in any day or for more than forty-eight hours in any week, he shall, in respect of overtime work, be entitled to wages at the rate of twice his ordinary rate of wages.",
+    "user_rights": [
+      "Right to receive double hourly wages for all documented overtime hours",
+      "Right to a maximum cap on mandatory overtime hours to ensure physical safety",
+      "Right to transparent tracking of hours in an official company attendance register"
+    ],
+    "deadline_days": 30,
+    "escalation_path": ["internal_hr_timesheet", "demand_legal_notice", "factory_inspector", "labour_court"],
+    "official_portal": "https://labour.gov.in",
+    "last_verified": "2026-05-16",
+    "source_url": "https://indiacode.nic.in"
+  }
+]
