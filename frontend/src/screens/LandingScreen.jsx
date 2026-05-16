@@ -14,29 +14,31 @@ const Landing = () => {
 
   // Clear session when landing page is mounted
   useEffect(() => {
-    const clearSession = async () => {
-      if (sessionId) {
-        try {
-          // Delete session from backend
-          await fetch(`${API_BASE_URL}/api/session/${sessionId}`, {
-            method: 'DELETE',
-          });
-        } catch (err) {
-          console.error('Error deleting session:', err);
-          // Continue even if backend deletion fails
-        }
+  // Capture sessionId at the time landing page loads
+  // not reactive to future changes
+  const sessionToDelete = sessionId;
+  
+  const clearSession = async () => {
+    if (sessionToDelete) {
+      try {
+        await fetch(`${API_BASE_URL}/api/session/${sessionToDelete}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.error('Error deleting session:', err);
       }
-      // Reset session in store
-      resetSession();
-    };
+    }
+    resetSession();
+  };
 
-    clearSession();
-  }, []); // Empty dependency array means this runs once on mount
+  clearSession();
+}, []); // ← empty deps, runs once on mount, but uses sessionId from closure
 
   const states = [
     { code: 'KA', name: 'Karnataka' },
     { code: 'MH', name: 'Maharashtra' },
     { code: 'DL', name: 'Delhi' },
+    { code: 'UP', name: 'Uttar Pradesh' },
   ];
 
   const languages = [
@@ -77,7 +79,16 @@ const Landing = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to start session');
+        // Provide specific error messages based on status code
+        if (response.status >= 500) {
+          throw new Error('Server error. Please try again later.');
+        } else if (response.status === 400) {
+          throw new Error('Invalid state or language selection.');
+        } else if (!navigator.onLine) {
+          throw new Error('No internet connection. Please check your network.');
+        } else {
+          throw new Error('Failed to start session. Please try again.');
+        }
       }
 
       const data = await response.json();
@@ -90,7 +101,8 @@ const Landing = () => {
       navigate('/chat');
     } catch (err) {
       console.error('Error starting session:', err);
-      setError('Failed to start session. Please try again.');
+      // Use the specific error message from the catch block
+      setError(err.message || 'Failed to start session. Please try again.');
     } finally {
       setIsLoading(false);
     }

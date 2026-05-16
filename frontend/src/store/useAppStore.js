@@ -19,6 +19,7 @@ const useAppStore = create(
       // Reset session
       resetSession: () => set({
         sessionId: null,
+        language: 'en',
         state: null,
         stage: 'landing',
       }),

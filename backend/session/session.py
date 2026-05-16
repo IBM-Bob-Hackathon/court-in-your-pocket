@@ -20,9 +20,9 @@ class SessionStartRequest(BaseModel):
         ...,
         description="User's preferred language (English, Hindi, Tamil, Telugu, Kannada, Marathi, Bengali, or Gujarati)"
     )
-    state: Literal["KA", "MH", "DL"] = Field(
+    state: Literal["KA", "MH", "DL", "UP"] = Field(
         ...,
-        description="User's state (Karnataka, Maharashtra, or Delhi)"
+        description="User's state (Karnataka, Maharashtra, Delhi, or Uttar Pradesh)"
     )
     
     class Config:
