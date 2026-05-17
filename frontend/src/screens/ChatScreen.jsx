@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useAppStore from '../store/useAppStore';
 import MessageBubble from '../components/MessageBubble';
 import TypingIndicator from '../components/TypingIndicator';
 import ChipOptions from '../components/ChipOptions';
@@ -12,7 +13,7 @@ const ChatScreen = () => {
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
   
-  const [sessionId, setSessionId] = useState(null);
+  const { sessionId, language: storeLanguage } = useAppStore();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -21,7 +22,7 @@ const ChatScreen = () => {
   const [showSafetyBlock, setShowSafetyBlock] = useState(false);
   const [showEmergencyPanel, setShowEmergencyPanel] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState(storeLanguage || 'en');
 
   // User details form state (shown inline in chat after intake completes)
   const [userName, setUserName] = useState('');
@@ -34,27 +35,16 @@ const ChatScreen = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Get sessionId from localStorage on mount
+  // Get sessionId from Zustand store on mount
   useEffect(() => {
-    const initializeSession = async () => {
-      const storedSessionId = localStorage.getItem('sessionId');
-      const storedLanguage = localStorage.getItem('language') || 'en';
-
-      // If no session, send back to onboarding (Screen 0) to create one
-      if (!storedSessionId || storedSessionId.startsWith('mock-session-')) {
-        localStorage.removeItem('sessionId');
-        navigate('/', { replace: true });
-        return;
-      }
-
-      setSessionId(storedSessionId);
-      setLanguage(storedLanguage);
-
-      // Send initial greeting
-      sendInitialGreeting(storedSessionId);
-    };
-
-    initializeSession();
+    // If no session in store, redirect to welcome
+    if (!sessionId) {
+      navigate('/welcome', { replace: true });
+      return;
+    }
+    setLanguage(storeLanguage || 'en');
+    // Send initial greeting
+    sendInitialGreeting(sessionId);
   }, []);
 
   const sendInitialGreeting = async (sid) => {
@@ -72,8 +62,7 @@ const ChatScreen = () => {
       console.error('Failed to get initial greeting:', error);
       // If session expired or not found, go back to onboarding to create a new one
       if (error.message && error.message.includes('404')) {
-        localStorage.removeItem('sessionId');
-        navigate('/', { replace: true });
+        navigate('/welcome', { replace: true });
         return;
       }
       setMessages([{

@@ -19,6 +19,8 @@ const RightsScreen = () => {
   const [expandedRights, setExpandedRights] = useState({});
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchRights = async () => {
       if (!sessionId) {
         setError('No session found. Please start from the beginning.');
@@ -33,6 +35,7 @@ const RightsScreen = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ sessionId, language }),
+          signal: controller.signal,
         });
 
         if (!response.ok) {
@@ -42,13 +45,16 @@ const RightsScreen = () => {
         const result = await response.json();
         setData(result);
       } catch (err) {
+        if (err.name === 'AbortError') return; // cancelled by cleanup — ignore
         setError(err.message);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     };
 
     fetchRights();
+
+    return () => controller.abort(); // cancel in-flight request on re-run or unmount
   }, [sessionId, language]);
 
   const toggleRightExpansion = (index) => {

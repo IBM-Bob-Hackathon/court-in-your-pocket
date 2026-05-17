@@ -97,6 +97,7 @@ CRITICAL RULES:
 3. Use plain {language_name} suitable for non-lawyers in India
 4. Provide confidence score 1-5 based on how well the facts match the law
 5. Calculate realistic deadline in days based on Indian legal timelines
+6. In the plain_english explanation, address the user by their "user_name" if provided in the facts. "partyName" is the OPPOSING party (e.g. landlord, employer) — NEVER refer to partyName as the user
 
 User Facts:
 {formatted_facts}

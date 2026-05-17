@@ -12,27 +12,13 @@ const Landing = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Clear session when landing page is mounted
+  // Clear local session state when landing page is mounted (user came back to start over)
+  // Backend sessions expire automatically after 30 minutes — no need to DELETE from here
   useEffect(() => {
-  // Capture sessionId at the time landing page loads
-  // not reactive to future changes
-  const sessionToDelete = sessionId;
-  
-  const clearSession = async () => {
-    if (sessionToDelete) {
-      try {
-        await fetch(`${API_BASE_URL}/api/session/${sessionToDelete}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.error('Error deleting session:', err);
-      }
+    if (sessionId) {
+      resetSession();
     }
-    resetSession();
-  };
-
-  clearSession();
-}, []); // ← empty deps, runs once on mount, but uses sessionId from closure
+  }, []); // ← runs once on mount
 
   const states = [
     { code: 'KA', name: 'Karnataka' },

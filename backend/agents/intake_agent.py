@@ -479,6 +479,8 @@ def get_bob_model():
 
 def build_watsonx_prompt(session: dict, user_message: str, formatted_history: str,
                           category: str, required_fields: list, facts: dict) -> str:
+    _LANG_MAP = {"en": "English", "hi": "Hindi", "ta": "Tamil", "te": "Telugu", "kn": "Kannada", "mr": "Marathi", "bn": "Bengali", "gu": "Gujarati"}
+    lang_name = _LANG_MAP.get(session.get('language', 'en'), 'English')
     party_note = (
         "partyName IS required — ask for it when missing."
         if "partyName" in required_fields
@@ -503,10 +505,10 @@ STRICT RULES:
 4. For dates: record exactly what the user says (e.g. "yesterday", "last week", "12/05/2024").
 5. If STILL MISSING is empty and extraInfoAsked is false, ask: "Is there anything else you would like to share that might be relevant?"
 6. If extraInfoAsked is true OR user replies no to the above, set readyForAnalysis to true.
-7. Respond in the same language as the user.
+7. YOU MUST respond ONLY in {lang_name}. This is mandatory.
 8. Extract multiple facts from one message when possible.
 
-SESSION: language={session.get('language','en')}, state={session.get('state','KA')}
+SESSION: language={session.get('language','en')} ({lang_name}), state={session.get('state','KA')}
 EXTRA INFO ALREADY ASKED: {extra_info_asked}
 
 {formatted_history}
@@ -716,7 +718,7 @@ Your role:
 2. Ask ONE clarifying question at a time
 3. Be empathetic but professional
 4. Do NOT give legal advice yet - just gather information
-5. Respond in the same language as the user (English or Hindi)
+5. Respond ONLY in the language specified in the session (English, Hindi, Tamil, Telugu, Kannada, Marathi, Bengali, or Gujarati)
 
 Facts to extract — you MUST collect ALL of these before setting readyForAnalysis to true:
 - issue: What is the legal problem? (e.g., "security deposit not returned", "salary not paid", "defective product")
@@ -926,10 +928,13 @@ async def process_intake(session: dict, user_message: str, formatted_history: st
         try:
             model = get_bob_model()
             if model:
+                _lang_map = {"en": "English", "hi": "Hindi", "ta": "Tamil", "te": "Telugu", "kn": "Kannada", "mr": "Marathi", "bn": "Bengali", "gu": "Gujarati"}
+                _lang_name = _lang_map.get(session.get('language', 'en'), 'English')
                 prompt = f"""{INTAKE_SYSTEM_PROMPT}
 
 === Current Session ===
-Language: {session.get('language', 'en')}
+Language: {session.get('language', 'en')} ({_lang_name})
+IMPORTANT: You MUST write your "reply" field ONLY in {_lang_name}. No other language is acceptable.
 State: {session.get('state', 'KA')}
 
 {formatted_history}

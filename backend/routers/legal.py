@@ -210,6 +210,12 @@ async def analyze_legal_issue(request: AnalyzeRequest):
         # Extract facts and state
         extracted_facts = session.get("extractedFacts", {})
         state = session.get("state", "KA")
+
+        # Inject user_name into facts so the analysis agent addresses the right person
+        user_details = session.get("userDetails") or {}
+        user_name = user_details.get("user_name")
+        if user_name:
+            extracted_facts = {**extracted_facts, "user_name": user_name}
         
         # Validate that we have enough facts
         if not extracted_facts.get("issue"):

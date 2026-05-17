@@ -1,5 +1,27 @@
 [
   {
+    "id": "TN_IN_001",
+    "category": "tenant",
+    "scenario": "security_deposit_not_returned",
+    "keywords": ["deposit", "security deposit", "return deposit", "not returning deposit", "refund deposit", "advance", "not returning advance", "security amount"],
+    "jurisdiction": ["KA", "MH", "DL", "UP", "IN"],
+    "law_name": "Model Tenancy Act",
+    "year": 2021,
+    "section": "Section 11",
+    "plain_english": "Your landlord is legally required to return your security deposit within one month of you vacating the premises, after deducting only legitimate damages. Withholding the deposit without valid reason is an offence.",
+    "exact_quote": "The landlord shall refund the security deposit after making deductions, if any, towards the dues payable by the tenant under this Act or the agreement to rent, within a period of one month from the date on which the tenant has vacated the premises.",
+    "user_rights": [
+      "Right to receive full security deposit refund within 1 month of vacating",
+      "Right to demand itemised deduction statement if any amount is withheld",
+      "Right to file complaint with Rent Authority if deposit is withheld without reason"
+    ],
+    "deadline_days": 30,
+    "escalation_path": ["demand_letter", "rent_authority", "civil_court"],
+    "official_portal": "https://mohua.gov.in",
+    "last_verified": "2026-05-17",
+    "source_url": "https://indiacode.nic.in"
+  },
+  {
     "id": "TN_IN_002",
     "category": "tenant",
     "scenario": "unlawful_eviction_without_notice",
