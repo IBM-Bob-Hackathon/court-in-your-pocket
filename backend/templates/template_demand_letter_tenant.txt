@@ -1,0 +1,30 @@
+Date: {{notice_date}}
+
+To,
+{{landlord_name}}
+{{property_address}}
+
+Subject: Formal Demand for Return of Security Deposit
+
+Dear {{landlord_name}},
+
+I, {{tenant_name}}, was a tenant at the property located at {{property_address}} under a lease agreement that commenced on {{lease_start_date}} and concluded on {{lease_end_date}}.
+
+As per the terms of our rental agreement and the provisions under Indian law, I am writing to formally demand the immediate return of my security deposit in the amount of Rs. {{deposit_amount}}.
+
+Despite the lease period having ended and my having vacated the premises in good condition, the security deposit has not been returned to me. This is in violation of my rights as a tenant under the applicable tenancy laws in {{city}}.
+
+I hereby request that you return the full security deposit amount of Rs. {{deposit_amount}} within 15 days from the date of receipt of this letter. Failure to comply with this demand will leave me with no option but to pursue legal remedies available under the law, including filing a complaint with the appropriate authorities.
+
+I trust that this matter can be resolved amicably without the need for legal intervention.
+
+Please acknowledge receipt of this letter and confirm the date by which the deposit will be returned.
+
+Yours sincerely,
+
+{{tenant_name}}
+Contact: {{tenant_contact}}
+Email: {{tenant_email}}
+
+---
+Note: This is a formal legal notice. Please retain a copy for your records.

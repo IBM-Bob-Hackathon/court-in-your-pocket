@@ -26,8 +26,22 @@ MODEL_ID = "meta-llama/llama-3-3-70b-instruct"
 
 def _initialize_watsonx_client():
     """Initialize IBM watsonx AI client"""
+    # Validate credentials
+    if not IBM_WATSONX_API_KEY:
+        raise ValueError("IBM_WATSONX_API_KEY is not set in environment variables")
+    if not IBM_WATSONX_PROJECT_ID:
+        raise ValueError("IBM_WATSONX_PROJECT_ID is not set in environment variables")
+    if not IBM_WATSONX_URL:
+        raise ValueError("IBM_WATSONX_URL is not set in environment variables")
+    
+    # Validate URL format and remove trailing slashes/paths
+    if not IBM_WATSONX_URL.startswith("https://"):
+        raise ValueError(f"IBM_WATSONX_URL must start with https://. Current value: {IBM_WATSONX_URL}")
+    
+    base_url = IBM_WATSONX_URL.rstrip('/').split('/ml')[0]
+    
     credentials = Credentials(
-        url=IBM_WATSONX_URL,
+        url=base_url,
         api_key=IBM_WATSONX_API_KEY
     )
     return ModelInference(

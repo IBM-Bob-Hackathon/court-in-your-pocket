@@ -1,0 +1,30 @@
+Date: {{notice_date}}
+
+To,
+{{employer_name}}
+{{company_address}}
+
+Subject: Formal Demand for {{issue_type}}
+
+Dear {{employer_name}},
+
+I, {{employee_name}}, was/am employed at {{company_name}} in the position of {{job_title}} from {{employment_start_date}}{{employment_end_date}}.
+
+As per the terms of my employment agreement and the provisions under Indian labour laws, I am writing to formally demand {{demand_description}}.
+
+Despite my entitlement under {{applicable_law}}, {{issue_description}}. This is in violation of my rights as an employee under the applicable employment laws in India.
+
+I hereby request that you {{specific_demand}} within {{deadline_days}} days from the date of receipt of this letter. Failure to comply with this demand will leave me with no option but to pursue legal remedies available under the law, including filing a complaint with the Labour Commissioner and appropriate authorities.
+
+I trust that this matter can be resolved amicably without the need for legal intervention.
+
+Please acknowledge receipt of this letter and confirm the date by which this matter will be resolved.
+
+Yours sincerely,
+
+{{employee_name}}
+Contact: {{employee_contact}}
+Email: {{employee_email}}
+
+---
+Note: This is a formal legal notice. Please retain a copy for your records.

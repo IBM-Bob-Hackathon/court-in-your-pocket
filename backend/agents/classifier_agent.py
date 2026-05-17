@@ -26,8 +26,27 @@ MODEL_ID = "meta-llama/llama-3-3-70b-instruct"
 
 def _initialize_watsonx_client():
     """Initialize IBM watsonx AI client"""
+    # Validate credentials
+    if not IBM_WATSONX_API_KEY:
+        raise ValueError("IBM_WATSONX_API_KEY is not set in environment variables")
+    if not IBM_WATSONX_PROJECT_ID:
+        raise ValueError("IBM_WATSONX_PROJECT_ID is not set in environment variables")
+    if not IBM_WATSONX_URL:
+        raise ValueError("IBM_WATSONX_URL is not set in environment variables")
+    
+    # Validate URL format
+    if not IBM_WATSONX_URL.startswith("https://"):
+        raise ValueError(f"IBM_WATSONX_URL must start with https://. Current value: {IBM_WATSONX_URL}")
+    
+    # Remove trailing slashes and paths from URL
+    base_url = IBM_WATSONX_URL.rstrip('/').split('/ml')[0]
+    
+    print(f"🔵 [CLASSIFIER] Using watsonx URL: {base_url}")
+    print(f"🔵 [CLASSIFIER] Using project ID: {IBM_WATSONX_PROJECT_ID}")
+    print(f"🔵 [CLASSIFIER] Using model: {MODEL_ID}")
+    
     credentials = Credentials(
-        url=IBM_WATSONX_URL,
+        url=base_url,
         api_key=IBM_WATSONX_API_KEY
     )
     return ModelInference(
@@ -149,36 +168,59 @@ async def classify_issue(facts: Dict) -> Dict:
         {"category": "tenant", "sub_scenario": "security_deposit_not_returned"}
     """
     try:
+        print(f"🔵 [CLASSIFIER] Starting classification for issue: {facts.get('issue', 'N/A')[:50]}...")
+        
         # Initialize watsonx client
+        print("🔵 [CLASSIFIER] Initializing watsonx client...")
         client = _initialize_watsonx_client()
+        print("✅ [CLASSIFIER] Watsonx client initialized successfully")
         
         # Build prompt
         prompt = _build_classification_prompt(facts)
+        print(f"🔵 [CLASSIFIER] Built prompt (length: {len(prompt)} chars)")
+        print(f"🔵 [CLASSIFIER] Prompt preview: {prompt[:200]}...")
         
         # Generate response
+        print("🔵 [CLASSIFIER] Calling watsonx API...")
         response = client.generate_text(prompt=prompt)
+        print(f"✅ [CLASSIFIER] Received response from watsonx API")
+        print(f"🔵 [CLASSIFIER] Response type: {type(response)}")
         
         # Handle response type - convert to string if needed
         if isinstance(response, str):
             response_text = response
+            print(f"🔵 [CLASSIFIER] Response is string (length: {len(response_text)})")
         elif isinstance(response, dict):
             response_text = response.get("generated_text", str(response))
+            print(f"🔵 [CLASSIFIER] Response is dict, extracted text (length: {len(response_text)})")
         elif isinstance(response, list):
             response_text = str(response[0]) if response else ""
+            print(f"🔵 [CLASSIFIER] Response is list, converted to string (length: {len(response_text)})")
         else:
             response_text = str(response)
+            print(f"🔵 [CLASSIFIER] Response converted to string (length: {len(response_text)})")
+        
+        print(f"🔵 [CLASSIFIER] Response text: {response_text[:500]}...")
         
         # Parse and return classification
         try:
+            print("🔵 [CLASSIFIER] Parsing classification response...")
             classification = _parse_classification_response(response_text)
+            print(f"✅ [CLASSIFIER] Successfully parsed classification: {classification}")
             return classification
         except Exception as parse_error:
+            print(f"❌ [CLASSIFIER] Parsing error: {str(parse_error)}")
+            print(f"❌ [CLASSIFIER] Failed to parse response: {response_text[:200]}...")
             # Return safe fallback on parsing error
-            return {"category": "out_of_scope", "sub_scenario": "unknown"}
+            return {"category": "out_of_scope", "sub_scenario": "parsing_error"}
         
     except Exception as e:
+        print(f"❌ [CLASSIFIER] Critical error in classify_issue: {str(e)}")
+        print(f"❌ [CLASSIFIER] Error type: {type(e).__name__}")
+        import traceback
+        print(f"❌ [CLASSIFIER] Traceback: {traceback.format_exc()}")
         # Return safe fallback on any error
-        return {"category": "out_of_scope", "sub_scenario": "unknown"}
+        return {"category": "out_of_scope", "sub_scenario": "api_error"}
 
 
 # Test block

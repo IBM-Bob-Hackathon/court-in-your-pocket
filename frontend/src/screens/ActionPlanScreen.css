@@ -1,0 +1,480 @@
+/* Action Plan Screen Styles */
+
+/* Message Layout */
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.message-wrapper.justify-end {
+  align-items: flex-end;
+}
+
+.message-bubble {
+  max-width: 85%;
+  padding: 1rem;
+  border-radius: 1rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bot-message {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border: 1px solid #475569;
+  color: #f1f5f9;
+}
+
+.user-message {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  margin-left: auto;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  border-color: #ef4444;
+}
+
+.message-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+  color: inherit;
+}
+
+/* Options Styling */
+.message-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.option-button {
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #f1f5f9;
+}
+
+.option-button:hover:not(:disabled) {
+  background: #1e293b;
+  border-color: #3b82f6;
+  transform: translateX(4px);
+}
+
+.option-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.option-button.selected {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: #60a5fa;
+  transform: scale(1.02);
+}
+
+.option-label {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.option-description {
+  display: block;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+}
+
+.option-button.selected .option-description {
+  color: #e0e7ff;
+}
+
+/* Action Plan Styling */
+.action-plan-container {
+  margin-top: 1rem;
+  background: #0f172a;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid #334155;
+}
+
+.action-plan-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #60a5fa;
+  margin: 0 0 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.step-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #1e293b;
+  border-radius: 0.75rem;
+  border-left: 4px solid #3b82f6;
+  transition: all 0.3s ease;
+}
+
+.step-item:hover {
+  background: #334155;
+  transform: translateX(4px);
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-instruction {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #f1f5f9;
+  margin: 0 0 0.5rem 0;
+}
+
+.step-time {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  background: #0f172a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+}
+
+/* Document Preview Styling */
+.document-preview {
+  margin-top: 1rem;
+  background: #0f172a;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid #334155;
+}
+
+.document-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #60a5fa;
+  margin: 0 0 1rem 0;
+}
+
+.document-content {
+  background: #1e293b;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.document-content pre {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.document-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.download-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.share-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+}
+
+.share-btn:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+/* Law Info Card Styling */
+.law-info-card {
+  margin-top: 1rem;
+  background: #0f172a;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid #334155;
+}
+
+.law-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.law-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #60a5fa;
+  margin: 0;
+  flex: 1;
+}
+
+.law-section {
+  background: #1e293b;
+  color: #94a3b8;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.law-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  margin: 0 0 1rem 0;
+}
+
+.law-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.confidence-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.confidence-label {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.confidence-dots {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.confidence-dots .dot {
+  font-size: 1rem;
+}
+
+.confidence-dots .dot.filled {
+  color: #10b981;
+}
+
+.confidence-dots .dot.empty {
+  color: #334155;
+}
+
+.deadline-info {
+  background: #1e293b;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.deadline-info span {
+  font-size: 0.875rem;
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+/* Timestamp - Outside message bubble */
+.message-timestamp {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.375rem;
+  padding: 0 0.5rem;
+}
+
+.message-wrapper.justify-end .message-timestamp {
+  text-align: right;
+}
+
+.message-wrapper.justify-start .message-timestamp {
+  text-align: left;
+}
+
+/* Typing Indicator */
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: #64748b;
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+/* Scrollbar Styling */
+.document-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.document-content::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 3px;
+}
+
+.document-content::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+.document-content::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .message-bubble {
+    max-width: 95%;
+  }
+
+  .step-item {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .step-number {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+
+  .document-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+
+  .law-header {
+    flex-direction: column;
+  }
+
+  .law-section {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-bubble {
+    padding: 0.875rem;
+  }
+
+  .action-plan-container,
+  .document-preview,
+  .law-info-card {
+    padding: 1rem;
+  }
+
+  .action-plan-title,
+  .document-title {
+    font-size: 1.125rem;
+  }
+
+  .option-button {
+    padding: 0.875rem;
+  }
+}
+
+/* Focus Styles for Accessibility */
+.option-button:focus-visible,
+.action-btn:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Made with Bob */

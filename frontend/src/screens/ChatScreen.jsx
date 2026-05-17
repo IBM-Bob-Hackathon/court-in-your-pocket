@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
-import MessageBubble from '../components/MessageBubble';
-import TypingIndicator from '../components/TypingIndicator';
-import ChipOptions from '../components/ChipOptions';
-import ProgressTracker from '../components/ProgressTracker';
-import SafetyBlockScreen from '../components/SafetyBlockScreen';
-import EmergencyPanel from '../components/EmergencyPanel';
+import MessageBubble from './MessageBubble';
+import TypingIndicator from './TypingIndicator';
+import ChipOptions from './ChipOptions';
+import ProgressTracker from './ProgressTracker';
+import SafetyBlockScreen from './SafetyBlockScreen';
+import EmergencyPanel from './EmergencyPanel';
 import chatAPI from '../services/api';
 
 const ChatScreen = () => {
