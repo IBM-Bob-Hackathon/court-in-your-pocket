@@ -16,13 +16,13 @@ router = APIRouter(prefix="/api/session", tags=["session"])
 # Request/Response Models
 class SessionStartRequest(BaseModel):
     """Request model for starting a new session"""
-    language: Literal["en", "hi"] = Field(
+    language: Literal["en", "hi", "ta", "te", "kn", "mr", "bn", "gu"] = Field(
         ...,
-        description="User's preferred language (English or Hindi)"
+        description="User's preferred language (English, Hindi, Tamil, Telugu, Kannada, Marathi, Bengali, or Gujarati)"
     )
-    state: Literal["KA", "MH", "DL"] = Field(
+    state: Literal["KA", "MH", "DL", "UP"] = Field(
         ...,
-        description="User's state (Karnataka, Maharashtra, or Delhi)"
+        description="User's state (Karnataka, Maharashtra, Delhi, or Uttar Pradesh)"
     )
     
     class Config:
