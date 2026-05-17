@@ -57,6 +57,15 @@ class SessionResponse(BaseModel):
     confidenceScore: int | None
     createdAt: str
     lastAccessedAt: str
+    extractedFacts: dict | None = None
+    userDetails: dict | None = None
+
+
+class UserDetailsRequest(BaseModel):
+    """Request model for saving user contact details"""
+    user_name: str = Field(..., description="Full name of the user")
+    phone_number: str = Field(..., description="10-digit phone number")
+    email_id: str = Field("", description="Email address (optional)")
 
 
 # Endpoints
@@ -150,8 +159,34 @@ async def get_session(
         safetyFlagged=session["safetyFlagged"],
         confidenceScore=session["confidenceScore"],
         createdAt=session["createdAt"],
-        lastAccessedAt=session["lastAccessedAt"]
+        lastAccessedAt=session["lastAccessedAt"],
+        extractedFacts=session.get("extractedFacts"),
+        userDetails=session.get("userDetails"),
     )
+
+
+@router.patch(
+    "/{session_id}/user",
+    summary="Save user contact details",
+    description="Store user name, phone number, and email against the session for Dev 3"
+)
+async def save_user_details(
+    request: UserDetailsRequest,
+    session_id: str = Path(..., description="Session ID (UUID format)", pattern="^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+):
+    session = session_store.get_session(session_id)
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found or expired"
+        )
+    session["userDetails"] = {
+        "user_name": request.user_name,
+        "phone_number": request.phone_number,
+        "email_id": request.email_id,
+    }
+    session_store.update_session(session_id, session)
+    return {"status": "ok"}
 
 
 @router.delete(

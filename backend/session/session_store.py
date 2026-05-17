@@ -48,6 +48,11 @@ def create_session(language: str, state: str) -> str:
             "dates": [],
             "location": None
         },
+        "userDetails": {
+            "user_name": None,
+            "phone_number": None,
+            "email_id": None,
+        },
         "stage": "intake",
         "safetyFlagged": False,
         "confidenceScore": None,
