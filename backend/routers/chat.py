@@ -145,12 +145,8 @@ async def send_message(request: MessageRequest):
         if response.get("category"):
             session["category"] = response["category"]
 
-        # Transition only when the intake agent says so AND orchestrator confirms
-        all_facts_collected = (
-            response.get("readyForAnalysis", False) and
-            should_transition_to_analysis(response["extractedFacts"], session.get("category"))
-        )
-        if all_facts_collected:
+        # Transition: trust the intake agent's readyForAnalysis flag
+        if response.get("readyForAnalysis", False):
             session["stage"] = "analysis"
         
         # Add Bob's reply to history

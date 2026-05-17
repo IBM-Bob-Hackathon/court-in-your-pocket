@@ -88,7 +88,8 @@ CATEGORIES = {
         "keywords": [
             "theft", "stolen", "stole", "robbery", "robbed", "pickpocket",
             "burglary", "broke in", "broke into", "missing", "snatched",
-            "thief", "chain snatching", "mugging", "looted", "loot"
+            "thief", "chain snatching", "mugging", "looted", "loot",
+            "lost", "lose", "lost my", "misplaced", "phone gone", "dropped"
         ],
         "party_required": False,   # perpetrator is typically unknown
         "required_fields": ["issue", "location", "amount", "dates"],
@@ -215,6 +216,12 @@ _MONTH_MAP = {
     "november": 11, "december": 12,
 }
 
+_DAY_MAP = {
+    "monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
+    "friday": 4, "saturday": 5, "sunday": 6,
+    "mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6,
+}
+
 def _to_ddmmyyyy(d: date) -> str:
     return d.strftime("%d/%m/%Y")
 
@@ -246,6 +253,15 @@ def _normalize_date_token(token: str) -> str | None:
         return _to_ddmmyyyy(d)
     if t in ("last year", "previous year"):
         return _to_ddmmyyyy(today.replace(year=today.year - 1, day=1, month=1))
+
+    # ── "last <weekday>" or "last week <weekday>" ─────────────────────────
+    m = re.match(r'^(?:last\s+week\s+|last\s+)(monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun)$', t)
+    if m:
+        target_wd = _DAY_MAP[m.group(1)]
+        days_ago = (today.weekday() - target_wd) % 7
+        if days_ago == 0:
+            days_ago = 7   # "last wednesday" when today IS wednesday → previous wednesday
+        return _to_ddmmyyyy(today - timedelta(days=days_ago))
 
     # ── "N unit(s) ago" ───────────────────────────────────────────────────
     m = re.match(r'^(\d+)\s*(day|week|month|year)s?\s*ago$', t)
@@ -303,10 +319,14 @@ def extract_dates(message: str) -> list:
     """
     today = date.today()
     raw_patterns = [
-        # dd/mm/yyyy or dd-mm-yyyy
+        # dd/mm/yyyy or dd-mm-yyyy  (most specific first)
         r'\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})\b',
         # N days/weeks/months/years ago
         r'\b(\d+\s*(?:day|week|month|year)s?\s+ago)\b',
+        # "last week <weekday>"  — MUST be before "last week" so longer match wins
+        r'\b(last\s+week\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun))\b',
+        # "last <weekday>"       — MUST be before "last <unit>"
+        r'\b(last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun))\b',
         # last/previous + unit
         r'\b(last\s+(?:day|week|month|year)|yesterday|today|previous\s+(?:week|month|year))\b',
         # Month + optional year
@@ -460,9 +480,9 @@ def get_bob_model():
 def build_watsonx_prompt(session: dict, user_message: str, formatted_history: str,
                           category: str, required_fields: list, facts: dict) -> str:
     party_note = (
-        "partyName IS required for this issue type — ask for it."
+        "partyName IS required — ask for it when missing."
         if "partyName" in required_fields
-        else "partyName is NOT required for this issue type — do NOT ask for it."
+        else "⚠️ partyName is NOT required for this category. NEVER ask for it under any circumstances."
     )
     missing = [f for f in required_fields if field_missing(facts, f)]
     extra_info_asked = facts.get("extraInfoAsked", False)
@@ -472,19 +492,19 @@ def build_watsonx_prompt(session: dict, user_message: str, formatted_history: st
 ISSUE CATEGORY: {category}
 {party_note}
 
-REQUIRED FIELDS FOR THIS CATEGORY: {required_fields}
+ONLY THESE FIELDS ARE REQUIRED: {required_fields}
 STILL MISSING: {missing}
 FACTS COLLECTED SO FAR: {json.dumps({k: v for k, v in facts.items() if v and k != 'extraInfoAsked'}, ensure_ascii=False)}
 
-RULES:
-1. Collect facts in this order: {" → ".join(required_fields)}
-2. Ask ONE question at a time about the next missing field
-3. Be empathetic and professional
-4. Do NOT ask for information the user cannot have (e.g. thief's name)
-5. If ALL required fields are filled and extraInfoAsked is false, ask: "Is there anything else you would like to share that might be relevant?"
-6. If extraInfoAsked is true, set readyForAnalysis to true
-7. Respond in the same language as the user (English or Hindi)
-8. Extract multiple facts from one message if given
+STRICT RULES:
+1. ONLY collect the fields listed in REQUIRED FIELDS above. Do NOT ask for anything else.
+2. Ask ONE question at a time about the NEXT missing field from the STILL MISSING list.
+3. Be empathetic and professional.
+4. For dates: record exactly what the user says (e.g. "yesterday", "last week", "12/05/2024").
+5. If STILL MISSING is empty and extraInfoAsked is false, ask: "Is there anything else you would like to share that might be relevant?"
+6. If extraInfoAsked is true OR user replies no to the above, set readyForAnalysis to true.
+7. Respond in the same language as the user.
+8. Extract multiple facts from one message when possible.
 
 SESSION: language={session.get('language','en')}, state={session.get('state','KA')}
 EXTRA INFO ALREADY ASKED: {extra_info_asked}
@@ -493,10 +513,10 @@ EXTRA INFO ALREADY ASKED: {extra_info_asked}
 
 USER: {user_message}
 
-Respond ONLY with valid JSON:
+Respond ONLY with valid JSON (no extra text before or after):
 {{
   "reply": "your next question or acknowledgment",
-  "extractedFacts": {{...updated facts...}},
+  "extractedFacts": {{...updated facts with all collected values...}},
   "readyForAnalysis": false,
   "category": "{category}"
 }}"""
@@ -539,6 +559,17 @@ async def process_intake(session: dict, user_message: str, formatted_history: st
                     if m:
                         resp = json.loads(m.group())
                         merged = {**facts, **resp.get("extractedFacts", {})}
+                        # Normalize any raw date strings IBM returned (e.g. "yesterday" → "16/05/2026")
+                        if merged.get("dates"):
+                            normed = []
+                            for d in merged["dates"]:
+                                d_str = str(d).strip()
+                                if re.match(r'^\d{2}/\d{2}/\d{4}$', d_str):
+                                    normed.append(d_str)  # already normalized
+                                else:
+                                    nd = _normalize_date_token(d_str.lower())
+                                    normed.append(nd if nd else d_str)
+                            merged["dates"] = list(dict.fromkeys(normed))  # deduplicate
                         resp["extractedFacts"] = merged
                         resp.setdefault("chips", [])
                         return resp

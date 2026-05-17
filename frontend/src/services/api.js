@@ -70,6 +70,23 @@ export const chatAPI = {
       throw error;
     }
   },
+
+  /**
+   * Save user contact details (name, phone, email) to the session
+   * @param {string} sessionId - Current session ID
+   * @param {{ user_name: string, phone_number: string, email_id: string }} details
+   */
+  async saveUserDetails(sessionId, details) {
+    const response = await fetch(`${API_BASE_URL}/api/session/${sessionId}/user`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(details),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to save user details: ${response.status}`);
+    }
+    return response.json();
+  },
 };
 
 export default chatAPI;

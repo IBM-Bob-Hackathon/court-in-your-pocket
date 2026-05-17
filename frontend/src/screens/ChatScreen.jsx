@@ -23,6 +23,12 @@ const ChatScreen = () => {
   const [isListening, setIsListening] = useState(false);
   const [language, setLanguage] = useState('en');
 
+  // User details form state (shown inline in chat after intake completes)
+  const [userName, setUserName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [emailId, setEmailId] = useState('');
+  const [detailsError, setDetailsError] = useState('');
+
   // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -121,12 +127,10 @@ const ChatScreen = () => {
       setChips(response.chips || []);
       setCurrentStage(response.stage);
 
-      // Check for stage transition to analysis
+      // Check for stage transition to analysis — inject inline form card into chat
       if (response.stage === 'analysis') {
-        // Wait a moment, then navigate to rights screen
-        setTimeout(() => {
-          navigate('/rights');
-        }, 2000);
+        setMessages(prev => [...prev, { sender: 'user-details-form', timestamp: new Date() }]);
+        setChips([]);
       }
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -140,6 +144,46 @@ const ChatScreen = () => {
     } finally {
       setIsTyping(false);
     }
+  };
+
+  const handleUserDetailsSubmit = async () => {
+    if (!userName.trim() || !phoneNumber.trim()) {
+      setDetailsError('Please fill in the mandatory fields marked with *');
+      return;
+    }
+    if (!/^\d{10}$/.test(phoneNumber.replace(/[\s\-+]/g, ''))) {
+      setDetailsError('Please enter a valid 10-digit phone number');
+      return;
+    }
+    setDetailsError('');
+
+    // Save to localStorage for Dev 3
+    localStorage.setItem('user_name', userName.trim());
+    localStorage.setItem('phone_number', phoneNumber.trim());
+    localStorage.setItem('email_id', emailId.trim());
+
+    // Persist to backend session
+    try {
+      await chatAPI.saveUserDetails(sessionId, {
+        user_name: userName.trim(),
+        phone_number: phoneNumber.trim(),
+        email_id: emailId.trim(),
+      });
+    } catch (err) {
+      console.warn('Could not save user details to session:', err);
+    }
+
+    // Remove form card, add Bob closing message, then navigate
+    setMessages(prev => [
+      ...prev.filter(m => m.sender !== 'user-details-form'),
+      {
+        sender: 'bob',
+        message: `Thank you, ${userName.trim()}! I've noted all your details. I now have everything I need to analyze your legal situation.`,
+        timestamp: new Date(),
+      }
+    ]);
+
+    setTimeout(() => navigate('/rights'), 1800);
   };
 
   const handleChipSelect = (chip) => {
@@ -229,7 +273,7 @@ const ChatScreen = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-slate-900">
+    <div className="relative flex flex-col h-screen max-h-screen overflow-hidden bg-slate-900">
       <ProgressTracker
         currentStep={getProgressStep()}
         totalSteps={4}
@@ -239,12 +283,69 @@ const ChatScreen = () => {
       <div className="flex-1 overflow-y-auto min-h-0 px-3 py-4">
         <div className="max-w-4xl mx-auto space-y-4">
           {messages.map((msg, idx) => (
-            <MessageBubble
-              key={idx}
-              message={msg.message}
-              sender={msg.sender}
-              timestamp={msg.timestamp}
-            />
+            msg.sender === 'user-details-form' ? (
+              <div key={idx} className="max-w-sm bg-slate-800 border border-amber-500/40 rounded-2xl p-5 shadow-lg">
+                <h3 className="text-amber-400 font-bold text-lg mb-1">Almost done!</h3>
+                <p className="text-slate-400 text-sm mb-4">
+                  Please share your contact details so we can send you a complete summary of your case.
+                </p>
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-slate-300 text-sm font-medium">
+                      User Name <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={userName}
+                      onChange={e => setUserName(e.target.value)}
+                      placeholder="Enter your full name"
+                      className="bg-slate-700 text-white border border-slate-600 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 placeholder-slate-500 text-sm"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-slate-300 text-sm font-medium">
+                      Phone Number <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={e => setPhoneNumber(e.target.value)}
+                      placeholder="10-digit mobile number"
+                      maxLength={10}
+                      className="bg-slate-700 text-white border border-slate-600 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 placeholder-slate-500 text-sm"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-slate-300 text-sm font-medium">
+                      Email ID <span className="text-slate-500 text-xs">(optional)</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={emailId}
+                      onChange={e => setEmailId(e.target.value)}
+                      placeholder="your@email.com"
+                      className="bg-slate-700 text-white border border-slate-600 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 placeholder-slate-500 text-sm"
+                    />
+                  </div>
+                  <button
+                    onClick={handleUserDetailsSubmit}
+                    className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-2.5 rounded-xl transition-colors mt-1 text-sm"
+                  >
+                    Submit &amp; Continue
+                  </button>
+                  {detailsError && (
+                    <p className="text-red-400 text-sm text-center -mt-1">{detailsError}</p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <MessageBubble
+                key={idx}
+                message={msg.message}
+                sender={msg.sender}
+                timestamp={msg.timestamp}
+              />
+            )
           ))}
           
           {isTyping && <TypingIndicator />}
@@ -274,7 +375,7 @@ const ChatScreen = () => {
               }}
               onKeyPress={handleKeyPress}
               placeholder={isListening ? '🎙️  Listening...' : 'Ask your legal question...'}
-              disabled={isListening}
+              disabled={isListening || messages.some(m => m.sender === 'user-details-form')}
               className="flex-1 bg-transparent text-white text-base placeholder-slate-400 focus:outline-none py-1 leading-relaxed min-h-[28px] max-h-28 resize-none overflow-hidden"
             />
             
