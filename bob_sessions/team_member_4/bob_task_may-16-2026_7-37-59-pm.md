@@ -98,7 +98,7 @@ I'll help you resolve this error. The issue is that the IBM_API_KEY environment 
 <file><path>backend/.env.example</path>
 <content lines="1-10">
  1 | # IBM watsonx.ai Configuration (OpenAI-compatible API)
- 2 | IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+ 2 | IBM_API_KEY=#
  3 | IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/
  4 | 
  5 | # Server Configuration (Optional)
@@ -631,7 +631,7 @@ OPENAI_API_KEY=_jHZMIjQ3ajM6jxQJJe4LwixQ_WzMozQZzeS_UNEu6Rd
 # Server Configuration (Optional)
 =======
 # IBM watsonx.ai Configuration (OpenAI-compatible API)
-IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+IBM_API_KEY=#
 IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/
 
 # Server Configuration (Optional)
@@ -748,11 +748,11 @@ The error shows a 404 Not Found from nginx, which means the IBM_BASE_URL is inco
 :start_line:1
 -------
 # IBM watsonx.ai Configuration (OpenAI-compatible API)
-IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+IBM_API_KEY=#
 IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/
 =======
 # IBM watsonx.ai Configuration (OpenAI-compatible API)
-IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+IBM_API_KEY=
 IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/ml/v1
 >>>>>>> REPLACE
 </diff>
@@ -927,11 +927,11 @@ Now I need to add the IBM_PROJECT_ID to the .env file and update the code to pas
 :start_line:1
 -------
 # IBM watsonx.ai Configuration (OpenAI-compatible API)
-IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+IBM_API_KEY=#
 IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/ml/v1
 =======
 # IBM watsonx.ai Configuration (OpenAI-compatible API)
-IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+IBM_API_KEY=#
 IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/ml/v1
 IBM_PROJECT_ID=your-project-id-here
 >>>>>>> REPLACE
@@ -1088,11 +1088,11 @@ Now let me also update the .env.example file to include the IBM_PROJECT_ID so it
 :start_line:1
 -------
 # IBM watsonx.ai Configuration (OpenAI-compatible API)
-IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+IBM_API_KEY=#
 IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/
 =======
 # IBM watsonx.ai Configuration (OpenAI-compatible API)
-IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+IBM_API_KEY=#
 IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/ml/v1
 IBM_PROJECT_ID=your-project-id-here
 >>>>>>> REPLACE
@@ -1799,7 +1799,7 @@ Still getting the same error "{
 
 <file_content path="backend/.env">
  1 | # IBM watsonx.ai Configuration (OpenAI-compatible API)
- 2 | IBM_API_KEY=FG93EZzNowH6ifwMTchJGfa_oFsQTGnIswM2SooparfB
+ 2 | IBM_API_KEY=#
  3 | IBM_BASE_URL=https://us-south.ml.cloud.ibm.com/ml/v1
  4 | IBM_PROJECT_ID=your-project-id-here
  5 | 
