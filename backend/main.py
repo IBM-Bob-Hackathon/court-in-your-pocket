@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 
 # Import routers
 from session import session
+from routers import action_plan
 from routers.legal import router as legal_router
 
 # Import utilities
@@ -33,18 +34,18 @@ async def lifespan(app: FastAPI):
     Lifespan context manager for startup and shutdown events.
     """
     # Startup
-    print("[STARTUP] Starting Court in Your Pocket API...")
-    print(f"[STARTUP] Frontend URL: {FRONTEND_URL}")
-    print(f"[STARTUP] Backend Port: {BACKEND_PORT}")
+    print("Starting Court in Your Pocket API...")
+    print(f"Frontend URL: {FRONTEND_URL}")
+    print(f"Backend Port: {BACKEND_PORT}")
     
     # Cleanup expired sessions on startup
     cleaned = session_store.cleanup_expired_sessions()
-    print(f"[STARTUP] Cleaned up {cleaned} expired sessions")
+    print(f"Cleaned up {cleaned} expired sessions")
     
     yield
     
     # Shutdown
-    print("[SHUTDOWN] Court in Your Pocket API shutting down...")
+    print("Shutting down Court in Your Pocket API...")
 
 
 # Initialize FastAPI app
@@ -66,8 +67,12 @@ app.add_middleware(
 
 # Include routers
 app.include_router(session.router)
+app.include_router(action_plan.router)
 app.include_router(legal_router)
 app.include_router(chat.router)
+
+
+
 
 # Root endpoint
 @app.get("/", tags=["health"])

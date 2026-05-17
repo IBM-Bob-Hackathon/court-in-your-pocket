@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import ErrorBoundary from './components/ErrorBoundary';
+import ErrorBoundary from './screens/ErrorBoundary';
 import Landing from './screens/LandingScreen';
 import Chat from './screens/ChatScreen';
 import Rights from './screens/RightsScreen';

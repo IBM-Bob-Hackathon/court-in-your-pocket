@@ -87,6 +87,47 @@ export const chatAPI = {
     }
     return response.json();
   },
+  async generateActionPlan(sessionId, category, subScenario, option) {
+    const response = await fetch(`${API_BASE_URL}/api/action-plan/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sessionId,
+        category,
+        sub_scenario: subScenario,
+        option,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to generate action plan');
+    }
+
+    return response.json();
+  },
+  async generateDocument(sessionId, category = null, option = null) {
+    const response = await fetch(`${API_BASE_URL}/api/document/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sessionId,
+        category,
+        option,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to generate document');
+    }
+
+    return response.json();
+  }
 };
 
 export default chatAPI;

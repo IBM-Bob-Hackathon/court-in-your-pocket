@@ -1,0 +1,30 @@
+Date: {{notice_date}}
+
+To,
+{{seller_name}}
+{{seller_address}}
+
+Subject: Formal Complaint and Demand for {{issue_type}}
+
+Dear {{seller_name}},
+
+I, {{consumer_name}}, purchased {{product_service_description}} from your establishment/platform on {{purchase_date}} with {{transaction_details}}.
+
+As per the terms of sale and the provisions under the Consumer Protection Act, 2019, I am writing to formally demand {{demand_description}}.
+
+Despite my rights as a consumer, {{issue_description}}. This constitutes {{violation_type}} and is in violation of my rights under the Consumer Protection Act, 2019.
+
+I hereby request that you {{specific_demand}} within {{deadline_days}} days from the date of receipt of this letter. Failure to comply with this demand will leave me with no option but to pursue legal remedies available under the law, including filing a complaint with the National Consumer Helpline and the District Consumer Forum.
+
+I trust that this matter can be resolved amicably without the need for legal intervention.
+
+Please acknowledge receipt of this letter and confirm the date by which this matter will be resolved.
+
+Yours sincerely,
+
+{{consumer_name}}
+Contact: {{consumer_contact}}
+Email: {{consumer_email}}
+
+---
+Note: This is a formal legal notice. Please retain a copy for your records.
