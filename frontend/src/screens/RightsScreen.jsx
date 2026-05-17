@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import useAppStore from '../store/useAppStore';
 
 // Constants
 const MS_PER_MONTH = 1000 * 60 * 60 * 24 * 30;
@@ -9,7 +9,7 @@ const VERIFICATION_WARNING_THRESHOLD = 6; // months
 
 const RightsScreen = () => {
   const navigate = useNavigate();
-  const { sessionId, language } = useAppContext();
+  const { sessionId, language } = useAppStore();
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

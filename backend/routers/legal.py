@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from session_store import get_session, update_session
+from session.session_store import get_session, update_session
 from agents.classifier_agent import classify_issue
 from agents.analysis_agent import analyze_rights
 
