@@ -118,9 +118,9 @@ const RightsScreen = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-navy-950 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gold-500 border-t-transparent"></div>
           <p className="text-white mt-4 text-lg">Analyzing your legal situation...</p>
         </div>
       </div>
@@ -129,7 +129,7 @@ const RightsScreen = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-navy-950 flex items-center justify-center p-4">
         <div className="bg-red-900 border border-red-700 rounded-lg p-6 max-w-md">
           <h2 className="text-red-300 text-xl font-bold mb-2">Error</h2>
           <p className="text-red-200">{error}</p>
@@ -147,11 +147,11 @@ const RightsScreen = () => {
   // Handle out-of-scope response
   if (data?.outOfScope) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-navy-950 text-white">
         <div className="max-w-4xl mx-auto p-4">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold text-yellow-500 mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gold-500 mb-2">
               Out of Scope
             </h1>
             <p className="text-gray-400 text-sm">
@@ -160,7 +160,7 @@ const RightsScreen = () => {
           </div>
 
           {/* Message Card */}
-          <div className="bg-slate-800 rounded-lg p-6 mb-6 border border-slate-700">
+          <div className="bg-navy-900 rounded-lg p-6 mb-6 border border-navy-800">
             <p className="text-white text-lg leading-relaxed">
               {data.message}
             </p>
@@ -168,12 +168,12 @@ const RightsScreen = () => {
 
           {/* Legal Aid Contacts */}
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-yellow-500 mb-4">
+            <h2 className="text-xl font-semibold text-gold-500 mb-4">
               Free Legal Aid Services
             </h2>
             <div className="space-y-4">
               {data.legalAid?.map((contact, index) => (
-                <div key={index} className="bg-slate-800 rounded-lg p-5 border border-slate-700">
+                <div key={index} className="bg-navy-900 rounded-lg p-5 border border-navy-800">
                   <h3 className="text-white font-semibold text-lg mb-2">
                     {contact.name}
                   </h3>
@@ -183,7 +183,7 @@ const RightsScreen = () => {
                   <div className="space-y-2">
                     {contact.phone && (
                       <div className="flex items-center text-gray-300">
-                        <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
                         <span>{contact.phone}</span>
@@ -194,7 +194,7 @@ const RightsScreen = () => {
                         href={contact.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center text-yellow-500 hover:text-yellow-400 transition-colors"
+                        className="flex items-center text-gold-500 hover:text-gold-400 transition-colors"
                       >
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
@@ -211,7 +211,7 @@ const RightsScreen = () => {
           {/* Back Button */}
           <button
             onClick={() => navigate('/')}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold py-4 rounded-lg transition-colors"
+            className="w-full bg-gold-500 hover:bg-gold-600 text-navy-950 font-semibold py-4 rounded-lg transition-colors"
           >
             Start Over
           </button>
@@ -221,11 +221,11 @@ const RightsScreen = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-navy-950 text-white">
       <div className="max-w-4xl mx-auto p-4 pb-24">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-yellow-500 mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-gold-500 mb-2">
             Your Legal Rights
           </h1>
           <p className="text-gray-400 text-sm">
@@ -249,12 +249,12 @@ const RightsScreen = () => {
         )}
 
         {/* Situation Summary Card */}
-        <div className="bg-slate-800 rounded-lg mb-6 overflow-hidden border border-slate-700">
+        <div className="bg-navy-900 rounded-lg mb-6 overflow-hidden border border-navy-800">
           <button
             onClick={() => setSummaryExpanded(!summaryExpanded)}
-            className="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-750 transition-colors"
+            className="w-full px-6 py-4 flex items-center justify-between hover:bg-navy-800 transition-colors"
           >
-            <h2 className="text-lg font-semibold text-yellow-500">Situation Summary</h2>
+            <h2 className="text-lg font-semibold text-gold-500">Situation Summary</h2>
             <svg
               className={`w-5 h-5 text-gray-400 transition-transform ${summaryExpanded ? 'rotate-180' : ''}`}
               fill="none"
@@ -277,11 +277,11 @@ const RightsScreen = () => {
         {/* Rights Cards */}
         <div className="space-y-4 mb-6">
           {data?.rights?.map((right, index) => (
-            <div key={index} className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+            <div key={index} className="bg-navy-900 rounded-lg border border-navy-800 overflow-hidden">
               <div className="p-6">
                 {/* Law Name and Section */}
                 <div className="mb-3">
-                  <h3 className="text-yellow-500 font-semibold text-lg mb-1">
+                  <h3 className="text-gold-500 font-semibold text-lg mb-1">
                     {right.law_name}
                   </h3>
                   <p className="text-gray-500 text-sm">{right.section}</p>
@@ -307,10 +307,10 @@ const RightsScreen = () => {
                 </div>
 
                 {/* Expandable Section */}
-                <div className="border-t border-slate-700 pt-4">
+                <div className="border-t border-navy-800 pt-4">
                   <button
                     onClick={() => toggleRightExpansion(index)}
-                    className="flex items-center text-yellow-500 hover:text-yellow-400 transition-colors text-sm font-medium"
+                    className="flex items-center text-gold-500 hover:text-gold-400 transition-colors text-sm font-medium"
                   >
                     <span>See original law text</span>
                     <svg
@@ -326,7 +326,7 @@ const RightsScreen = () => {
                   {expandedRights[index] && (
                     <div className="mt-4 space-y-3">
                       {/* Exact Quote */}
-                      <div className="bg-slate-900 p-4 rounded border-l-4 border-yellow-500">
+                      <div className="bg-navy-950 p-4 rounded border-l-4 border-gold-500">
                         <p className="text-gray-300 text-sm italic leading-relaxed">
                           "{right.exact_quote}"
                         </p>
@@ -338,7 +338,7 @@ const RightsScreen = () => {
                           href={right.source_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center text-yellow-500 hover:text-yellow-400 text-sm transition-colors"
+                          className="inline-flex items-center text-gold-500 hover:text-gold-400 text-sm transition-colors"
                         >
                           <span>View official source</span>
                           <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -356,7 +356,7 @@ const RightsScreen = () => {
 
         {/* Overall Confidence */}
         {data?.confidence && (
-          <div className="bg-slate-800 rounded-lg p-4 mb-6 border border-slate-700">
+          <div className="bg-navy-900 rounded-lg p-4 mb-6 border border-navy-800">
             <div className="flex items-center justify-between">
               <span className="text-gray-400 text-sm">Overall Analysis Confidence:</span>
               <div className="flex items-center gap-2">
@@ -369,7 +369,7 @@ const RightsScreen = () => {
 
         {/* Options Section */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-yellow-500 mb-4">Choose Your Next Step</h2>
+          <h2 className="text-xl font-semibold text-gold-500 mb-4">Choose Your Next Step</h2>
           <div className="space-y-3">
             {data?.options?.map((option) => (
               <button
@@ -377,18 +377,18 @@ const RightsScreen = () => {
                 onClick={() => handleOptionSelect(option.id)}
                 className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                   selectedOption === option.id
-                    ? 'border-yellow-500 bg-yellow-500 bg-opacity-10'
-                    : 'border-slate-700 bg-slate-800 hover:border-slate-600'
+                    ? 'border-gold-500 bg-gold-500 bg-opacity-10'
+                    : 'border-navy-800 bg-navy-900 hover:border-navy-700'
                 }`}
               >
                 <div className="flex items-center">
                   <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-3 flex-shrink-0 ${
                     selectedOption === option.id
-                      ? 'border-yellow-500 bg-yellow-500'
+                      ? 'border-gold-500 bg-gold-500'
                       : 'border-gray-500'
                   }`}>
                     {selectedOption === option.id && (
-                      <svg className="w-4 h-4 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 text-navy-950" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
@@ -404,14 +404,14 @@ const RightsScreen = () => {
         </div>
 
         {/* Action Button */}
-        <div className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 p-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-navy-950 border-t border-navy-800 p-4">
           <div className="max-w-4xl mx-auto">
             <button
               onClick={handleBuildActionPlan}
               disabled={!selectedOption}
               className={`w-full py-4 rounded-lg font-semibold text-lg transition-all ${
                 selectedOption
-                  ? 'bg-yellow-500 hover:bg-yellow-600 text-slate-900 shadow-lg shadow-yellow-500/50'
+                  ? 'bg-gold-500 hover:bg-gold-600 text-navy-950 shadow-lg shadow-gold-500/50'
                   : 'bg-gray-700 text-gray-500 cursor-not-allowed'
               }`}
             >

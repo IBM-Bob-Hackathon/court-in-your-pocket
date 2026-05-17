@@ -400,6 +400,40 @@ async def get_legal_resources(state: str = "KA"):
                         "description": "Free legal aid for eligible citizens"
                     }
                 ]
+            },
+            "UP": {
+                "helplines": [
+                    {
+                        "name": "UP State Legal Services Authority",
+                        "phone": "0522-2209340",
+                        "description": "Free legal aid and advice"
+                    },
+                    {
+                        "name": "UP Consumer Helpline",
+                        "phone": "1800-180-5512",
+                        "description": "Consumer complaints and guidance"
+                    }
+                ],
+                "portals": [
+                    {
+                        "name": "UP Rent Authority",
+                        "url": "https://up.gov.in",
+                        "description": "Tenant-landlord dispute resolution"
+                    },
+                    {
+                        "name": "UP Labour Department",
+                        "url": "https://uplabour.gov.in",
+                        "description": "Employment and wage disputes"
+                    }
+                ],
+                "legalAid": [
+                    {
+                        "name": "UP State Legal Services Authority",
+                        "phone": "0522-2209340",
+                        "website": "https://upslsa.up.nic.in",
+                        "description": "Free legal aid for eligible citizens"
+                    }
+                ]
             }
         }
         
