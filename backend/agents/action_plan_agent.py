@@ -81,8 +81,8 @@ class ActionPlanAgent:
             if not base_url.endswith('/ml/v1'):
                 base_url = base_url.rstrip('/') + '/ml/v1'
             
-            print(f"🔵 [ACTION_PLAN] Initializing OpenAI client with base_url: {base_url}")
-            print(f"🔵 [ACTION_PLAN] Project ID: {project_id}")
+            print(f"[ACTION_PLAN] Initializing OpenAI client with base_url: {base_url}")
+            print(f"[ACTION_PLAN] Project ID: {project_id}")
             
             # Create a custom HTTP client without proxy support
             http_client = httpx.Client(
@@ -98,7 +98,7 @@ class ActionPlanAgent:
                 },
                 http_client=http_client
             )
-            print(f"✅ [ACTION_PLAN] OpenAI client initialized successfully")
+            print(f"[ACTION_PLAN] OpenAI client initialized successfully")
         return self.client
     
     def generate_action_plan(
@@ -147,7 +147,9 @@ class ActionPlanAgent:
         if extracted_facts:
             context_info = "\n\nUser Context:\n"
             for key, value in extracted_facts.items():
-                context_info += f"- {key.replace('_', ' ').title()}: {value}\n"
+                # Convert value to string and handle None values
+                value_str = str(value) if value is not None else "Not provided"
+                context_info += f"- {key.replace('_', ' ').title()}: {value_str}\n"
         
         # Construct the prompt
         system_prompt = """You are an expert legal assistant specializing in Indian law. 
@@ -191,8 +193,10 @@ Focus on making the plan immediately actionable for someone in India."""
             return action_plan
             
         except Exception as e:
-            # Fallback error handling
-            raise Exception(f"Failed to generate action plan: {str(e)}")
+            # Fallback error handling - avoid printing Unicode characters
+            error_msg = str(e).encode('ascii', errors='replace').decode('ascii')
+            print(f"[ACTION_PLAN] ERROR: {error_msg}")
+            raise Exception(f"Failed to generate action plan: {error_msg}")
 
 
 # ============================================================================
@@ -480,7 +484,12 @@ Note: This is a formal legal notice. Please retain a copy for your records."""
         else:
             print(f"[DOCUMENT_GEN] No userDetails found in session")
         
-        print(f"[DOCUMENT_GEN] Final extracted_facts: {extracted_facts}")
+        # Print extracted_facts safely without Unicode characters
+        try:
+            facts_str = str(extracted_facts).encode('ascii', errors='replace').decode('ascii')
+            print(f"[DOCUMENT_GEN] Final extracted_facts: {facts_str}")
+        except Exception:
+            print(f"[DOCUMENT_GEN] Final extracted_facts: <contains non-ASCII characters>")
         
         # Use provided values or fall back to session data
         # Handle None values properly

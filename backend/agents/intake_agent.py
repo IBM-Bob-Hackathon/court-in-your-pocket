@@ -501,7 +501,7 @@ def build_watsonx_prompt(session: dict, user_message: str, formatted_history: st
     party_note = (
         "partyName IS required — ask for it when missing."
         if "partyName" in required_fields
-        else "⚠️ partyName is NOT required for this category. NEVER ask for it under any circumstances."
+        else "WARNING: partyName is NOT required for this category. NEVER ask for it under any circumstances."
     )
     missing = [f for f in required_fields if field_missing(facts, f)]
     extra_info_asked = facts.get("extraInfoAsked", False)
@@ -593,9 +593,12 @@ async def process_intake(session: dict, user_message: str, formatted_history: st
                         resp.setdefault("chips", [])
                         return resp
                 except (json.JSONDecodeError, ValueError):
-                    print(f"IBM Bob JSON parse failed: {raw[:200]}")
+                    # Print safely without Unicode characters
+                    safe_raw = str(raw[:200]).encode('ascii', errors='replace').decode('ascii')
+                    print(f"IBM Bob JSON parse failed: {safe_raw}")
         except Exception as e:
-            print(f"IBM Bob error: {e}")
+            safe_error = str(e).encode('ascii', errors='replace').decode('ascii')
+            print(f"IBM Bob error: {safe_error}")
 
     # ── 4. Rule-based fallback ────────────────────────────────────────────────
 
@@ -978,9 +981,12 @@ Respond ONLY with valid JSON. No other text."""
                         response["extractedFacts"] = merged_facts
                         return response
                 except json.JSONDecodeError:
-                    print(f"Failed to parse Bob's response as JSON: {response_text}")
+                    # Print safely without Unicode characters
+                    safe_text = str(response_text).encode('ascii', errors='replace').decode('ascii')
+                    print(f"Failed to parse Bob's response as JSON: {safe_text}")
         except Exception as e:
-            print(f"Error calling IBM Bob: {e}")
+            safe_error = str(e).encode('ascii', errors='replace').decode('ascii')
+            print(f"Error calling IBM Bob: {safe_error}")
 
     # ── Fallback: strict state-machine extractor ──────────────────────────────
     # Run regex first to catch obvious facts (cities, amounts, dates, issue keywords)

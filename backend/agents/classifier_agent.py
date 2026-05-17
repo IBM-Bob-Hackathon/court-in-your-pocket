@@ -41,9 +41,9 @@ def _initialize_watsonx_client():
     # Remove trailing slashes and paths from URL
     base_url = IBM_WATSONX_URL.rstrip('/').split('/ml')[0]
     
-    print(f"🔵 [CLASSIFIER] Using watsonx URL: {base_url}")
-    print(f"🔵 [CLASSIFIER] Using project ID: {IBM_WATSONX_PROJECT_ID}")
-    print(f"🔵 [CLASSIFIER] Using model: {MODEL_ID}")
+    print(f"[CLASSIFIER] Using watsonx URL: {base_url}")
+    print(f"[CLASSIFIER] Using project ID: {IBM_WATSONX_PROJECT_ID}")
+    print(f"[CLASSIFIER] Using model: {MODEL_ID}")
     
     credentials = Credentials(
         url=base_url,
@@ -168,57 +168,57 @@ async def classify_issue(facts: Dict) -> Dict:
         {"category": "tenant", "sub_scenario": "security_deposit_not_returned"}
     """
     try:
-        print(f"🔵 [CLASSIFIER] Starting classification for issue: {facts.get('issue', 'N/A')[:50]}...")
+        print(f"[CLASSIFIER] Starting classification for issue: {facts.get('issue', 'N/A')[:50]}...")
         
         # Initialize watsonx client
-        print("🔵 [CLASSIFIER] Initializing watsonx client...")
+        print("[CLASSIFIER] Initializing watsonx client...")
         client = _initialize_watsonx_client()
-        print("✅ [CLASSIFIER] Watsonx client initialized successfully")
+        print("[CLASSIFIER] Watsonx client initialized successfully")
         
         # Build prompt
         prompt = _build_classification_prompt(facts)
-        print(f"🔵 [CLASSIFIER] Built prompt (length: {len(prompt)} chars)")
-        print(f"🔵 [CLASSIFIER] Prompt preview: {prompt[:200]}...")
+        print(f"[CLASSIFIER] Built prompt (length: {len(prompt)} chars)")
+        print(f"[CLASSIFIER] Prompt preview: {prompt[:200]}...")
         
         # Generate response
-        print("🔵 [CLASSIFIER] Calling watsonx API...")
+        print("[CLASSIFIER] Calling watsonx API...")
         response = client.generate_text(prompt=prompt)
-        print(f"✅ [CLASSIFIER] Received response from watsonx API")
-        print(f"🔵 [CLASSIFIER] Response type: {type(response)}")
+        print(f"[CLASSIFIER] Received response from watsonx API")
+        print(f"[CLASSIFIER] Response type: {type(response)}")
         
         # Handle response type - convert to string if needed
         if isinstance(response, str):
             response_text = response
-            print(f"🔵 [CLASSIFIER] Response is string (length: {len(response_text)})")
+            print(f"[CLASSIFIER] Response is string (length: {len(response_text)})")
         elif isinstance(response, dict):
             response_text = response.get("generated_text", str(response))
-            print(f"🔵 [CLASSIFIER] Response is dict, extracted text (length: {len(response_text)})")
+            print(f"[CLASSIFIER] Response is dict, extracted text (length: {len(response_text)})")
         elif isinstance(response, list):
             response_text = str(response[0]) if response else ""
-            print(f"🔵 [CLASSIFIER] Response is list, converted to string (length: {len(response_text)})")
+            print(f"[CLASSIFIER] Response is list, converted to string (length: {len(response_text)})")
         else:
             response_text = str(response)
-            print(f"🔵 [CLASSIFIER] Response converted to string (length: {len(response_text)})")
+            print(f"[CLASSIFIER] Response converted to string (length: {len(response_text)})")
         
-        print(f"🔵 [CLASSIFIER] Response text: {response_text[:500]}...")
+        print(f"[CLASSIFIER] Response text: {response_text[:500]}...")
         
         # Parse and return classification
         try:
-            print("🔵 [CLASSIFIER] Parsing classification response...")
+            print("[CLASSIFIER] Parsing classification response...")
             classification = _parse_classification_response(response_text)
-            print(f"✅ [CLASSIFIER] Successfully parsed classification: {classification}")
+            print(f"[CLASSIFIER] Successfully parsed classification: {classification}")
             return classification
         except Exception as parse_error:
-            print(f"❌ [CLASSIFIER] Parsing error: {str(parse_error)}")
-            print(f"❌ [CLASSIFIER] Failed to parse response: {response_text[:200]}...")
+            print(f"[CLASSIFIER] ERROR - Parsing error: {str(parse_error)}")
+            print(f"[CLASSIFIER] ERROR - Failed to parse response: {response_text[:200]}...")
             # Return safe fallback on parsing error
             return {"category": "out_of_scope", "sub_scenario": "parsing_error"}
         
     except Exception as e:
-        print(f"❌ [CLASSIFIER] Critical error in classify_issue: {str(e)}")
-        print(f"❌ [CLASSIFIER] Error type: {type(e).__name__}")
+        print(f"[CLASSIFIER] ERROR - Critical error in classify_issue: {str(e)}")
+        print(f"[CLASSIFIER] ERROR - Error type: {type(e).__name__}")
         import traceback
-        print(f"❌ [CLASSIFIER] Traceback: {traceback.format_exc()}")
+        print(f"[CLASSIFIER] ERROR - Traceback: {traceback.format_exc()}")
         # Return safe fallback on any error
         return {"category": "out_of_scope", "sub_scenario": "api_error"}
 
