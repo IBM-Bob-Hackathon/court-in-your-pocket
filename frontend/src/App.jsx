@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ChatScreen from './screens/ChatScreen';
+import OnboardingScreen from './screens/LandingScreen';
 import './App.css';
 
 const RightsPlaceholder = () => {
@@ -16,7 +17,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/chat" replace />} />
+        <Route path="/" element={<OnboardingScreen />} />
         <Route path="/chat" element={<ChatScreen />} />
         <Route path="/rights" element={<RightsPlaceholder />} />
       </Routes>

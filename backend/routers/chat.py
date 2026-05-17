@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from agents.safety_agent import check_safety
 from agents.intake_agent import process_intake
-from session_store import get_session, update_session
+from session.session_store import get_session, update_session
 from utils.stage_orchestrator import (
     should_transition_to_analysis,
     count_intake_questions,
@@ -45,12 +45,12 @@ async def init_session(request: InitSessionRequest):
     """
     Initialize a new session
     """
-    from session_store import create_session
-    session = create_session(language=request.language, state=request.state)
+    from session.session_store import create_session
+    session_id = create_session(language=request.language, state=request.state)
     return InitSessionResponse(
-        sessionId=session["sessionId"],
-        language=session["language"],
-        state=session["state"]
+        sessionId=session_id,
+        language=request.language,
+        state=request.state
     )
 
 @router.post("/message")
@@ -87,7 +87,7 @@ async def send_message(request: MessageRequest):
         )
     
     # Step 2: Safety check
-    safety_result = await check_safety(request.message)
+    safety_result = check_safety(request.message)
     if not safety_result["safe"]:
         session["safetyFlagged"] = True
         update_session(request.sessionId, session)
@@ -111,9 +111,9 @@ async def send_message(request: MessageRequest):
     
     # Step 4: Route based on stage
     if session["stage"] == "intake":
-        # Check question limit
+        # Check question limit — raised to 10 to allow all 5 facts to be collected
         question_count = count_intake_questions(session["conversationHistory"])
-        if question_count >= 6:
+        if question_count >= 10:
             # Force transition even if not all facts collected
             session["stage"] = "analysis"
             reply = "Thank you for the information. Let me analyze your situation now."
@@ -139,15 +139,19 @@ async def send_message(request: MessageRequest):
         
         # Call intake agent
         response = await process_intake(session, request.message, formatted_history)
-        
-        # Update extracted facts
+
+        # Update extracted facts and category
         session["extractedFacts"] = response["extractedFacts"]
-        
-        # Check if ready to transition to analysis
-        if response["readyForAnalysis"] or should_transition_to_analysis(response["extractedFacts"]):
+        if response.get("category"):
+            session["category"] = response["category"]
+
+        # Transition only when the intake agent says so AND orchestrator confirms
+        all_facts_collected = (
+            response.get("readyForAnalysis", False) and
+            should_transition_to_analysis(response["extractedFacts"], session.get("category"))
+        )
+        if all_facts_collected:
             session["stage"] = "analysis"
-            if not response["reply"].endswith("situation."):
-                response["reply"] += "\n\nI have enough information. Let me check the relevant laws for your situation."
         
         # Add Bob's reply to history
         session["conversationHistory"].append({

@@ -29,11 +29,14 @@ const MessageBubble = ({ message, sender, timestamp }) => {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
         }`}
       >
-        <div className="bg-amber-500 text-slate-900 rounded-2xl rounded-tr-sm px-3 py-2 max-w-[75%] shadow-md">
+        <div
+          className="rounded-2xl rounded-tr-sm px-3 py-2 max-w-[75%] shadow-md"
+          style={{ backgroundColor: '#f59e0b', color: '#0f172a' }}
+        >
           <p className="text-sm text-left whitespace-pre-wrap break-words leading-relaxed mb-1">
             {message}
           </p>
-          <div className="flex items-center justify-end gap-1 text-[11px] text-slate-700/80">
+          <div className="flex items-center justify-end gap-1 text-[11px]" style={{ color: 'rgba(15, 23, 42, 0.7)' }}>
             <span>{formatTime(timestamp)}</span>
             <span className="text-[11px]">✓✓</span>
           </div>
@@ -48,17 +51,15 @@ const MessageBubble = ({ message, sender, timestamp }) => {
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
       }`}
     >
-      <div className="flex flex-row items-end gap-2">
-        <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-bold text-sm">B</span>
-        </div>
-        <div className="bg-blue-900 border border-blue-700/40 text-white rounded-2xl rounded-tl-sm px-3 py-2 max-w-[75%] shadow-md">
-          <p className="text-sm text-left whitespace-pre-wrap break-words leading-relaxed mb-1">
-            {message}
-          </p>
-          <div className="flex items-center justify-start text-[11px] text-blue-300/70">
-            <span>{formatTime(timestamp)}</span>
-          </div>
+      <div
+        className="rounded-2xl rounded-tl-sm px-3 py-2 max-w-[75%] shadow-md"
+        style={{ backgroundColor: '#1e3a8a', color: '#ffffff', border: '1px solid rgba(29, 78, 216, 0.4)' }}
+      >
+        <p className="text-sm text-left whitespace-pre-wrap break-words leading-relaxed mb-1">
+          {message}
+        </p>
+        <div className="flex items-center justify-start text-[11px]" style={{ color: 'rgba(147, 197, 253, 0.7)' }}>
+          <span>{formatTime(timestamp)}</span>
         </div>
       </div>
     </div>

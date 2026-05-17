@@ -30,22 +30,25 @@ const ChatScreen = () => {
 
   // Get sessionId from localStorage on mount
   useEffect(() => {
-    let storedSessionId = localStorage.getItem('sessionId');
-    const storedLanguage = localStorage.getItem('language') || 'en';
-    
-    // Create a mock session if none exists
-    if (!storedSessionId) {
-      storedSessionId = 'mock-session-' + Date.now();
-      localStorage.setItem('sessionId', storedSessionId);
-      localStorage.setItem('language', 'en');
-      localStorage.setItem('state', 'KA');
-    }
-    
-    setSessionId(storedSessionId);
-    setLanguage(storedLanguage);
-    
-    // Send initial greeting
-    sendInitialGreeting(storedSessionId);
+    const initializeSession = async () => {
+      const storedSessionId = localStorage.getItem('sessionId');
+      const storedLanguage = localStorage.getItem('language') || 'en';
+
+      // If no session, send back to onboarding (Screen 0) to create one
+      if (!storedSessionId || storedSessionId.startsWith('mock-session-')) {
+        localStorage.removeItem('sessionId');
+        navigate('/', { replace: true });
+        return;
+      }
+
+      setSessionId(storedSessionId);
+      setLanguage(storedLanguage);
+
+      // Send initial greeting
+      sendInitialGreeting(storedSessionId);
+    };
+
+    initializeSession();
   }, []);
 
   const sendInitialGreeting = async (sid) => {
@@ -61,6 +64,12 @@ const ChatScreen = () => {
       setCurrentStage(response.stage);
     } catch (error) {
       console.error('Failed to get initial greeting:', error);
+      // If session expired or not found, go back to onboarding to create a new one
+      if (error.message && error.message.includes('404')) {
+        localStorage.removeItem('sessionId');
+        navigate('/', { replace: true });
+        return;
+      }
       setMessages([{
         sender: 'bob',
         message: 'Namaste! What legal issue are you facing today?',
@@ -272,13 +281,14 @@ const ChatScreen = () => {
             <button
               onClick={startVoiceInput}
               disabled={isListening}
-              className={isListening
-                ? 'p-2 rounded-xl bg-red-500/20 text-red-400 animate-pulse'
-                : 'p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-600/50 transition-all duration-200'
+              className="p-3 rounded-xl transition-all duration-200 flex-shrink-0"
+              style={isListening
+                ? { backgroundColor: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+                : { backgroundColor: '#475569', color: '#94a3b8' }
               }
               title="Voice input"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                 <line x1="12" y1="19" x2="12" y2="23"/>
@@ -289,10 +299,17 @@ const ChatScreen = () => {
             <button
               onClick={() => handleSendMessage(inputText)}
               disabled={!inputText.trim() || isTyping}
-              className="p-2 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-900 transition-all duration-200 shadow-md shadow-amber-500/30 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex-shrink-0"
+              className="p-3 rounded-xl transition-all duration-200 flex-shrink-0"
+              style={{
+                backgroundColor: (!inputText.trim() || isTyping) ? '#64748b' : '#f59e0b',
+                color: '#0f172a',
+                opacity: (!inputText.trim() || isTyping) ? 0.5 : 1,
+                cursor: (!inputText.trim() || isTyping) ? 'not-allowed' : 'pointer',
+                boxShadow: (!inputText.trim() || isTyping) ? 'none' : '0 4px 6px -1px rgba(245, 158, 11, 0.3)'
+              }}
               title="Send message"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 2L11 13"/>
                 <path d="M22 2L15 22 11 13 2 9l20-7z"/>
               </svg>

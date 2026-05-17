@@ -2,36 +2,42 @@
 Stage Orchestrator - Manages conversation stage transitions
 """
 
-def should_transition_to_analysis(extracted_facts: dict) -> bool:
+# Category-specific required fields (must match intake_agent.py CATEGORIES)
+CATEGORY_REQUIRED_FIELDS = {
+    "tenant":           ["issue", "location", "partyName", "amount", "dates"],
+    "employment":       ["issue", "location", "partyName", "amount", "dates"],
+    "consumer":         ["issue", "location", "partyName", "amount", "dates"],
+    "theft":            ["issue", "location", "amount", "dates"],
+    "harassment":       ["issue", "location", "dates"],
+    "property":         ["issue", "location", "partyName", "dates"],
+    "police_complaint": ["issue", "location", "dates"],
+    "general":          ["issue", "location", "dates"],
+}
+
+
+def should_transition_to_analysis(extracted_facts: dict, category: str = None) -> bool:
     """
-    Determine if we have enough facts to move to analysis stage
-    
-    Required: issue, location
-    Optional: At least 2 of: partyName, amount, dates
-    
-    Args:
-        extracted_facts: Dictionary containing extracted facts
-        
-    Returns:
-        bool: True if ready to transition to analysis
+    Check if all mandatory fields for the detected category are filled.
+    Falls back to requiring issue + location + dates if category unknown.
+    Note: extraInfoAsked must also be True (open question was asked and answered).
     """
-    required = ["issue", "location"]
-    
-    # Check required fields
+    # The intake agent sets extraInfoAsked=True before marking readyForAnalysis
+    # Transition is only allowed after the open "anything else?" was handled
+    if not extracted_facts.get("extraInfoAsked"):
+        return False
+
+    required = CATEGORY_REQUIRED_FIELDS.get(category or "general", ["issue", "location", "dates"])
+
     for field in required:
-        if not extracted_facts.get(field):
-            return False
-    
-    # Check optional fields - must have actual values
-    filled_optional = 0
-    if extracted_facts.get("partyName"):
-        filled_optional += 1
-    if extracted_facts.get("amount"):
-        filled_optional += 1
-    if extracted_facts.get("dates") and len(extracted_facts.get("dates", [])) > 0:
-        filled_optional += 1
-    
-    return filled_optional >= 2
+        val = extracted_facts.get(field)
+        if field == "dates":
+            if not val or len(val) == 0:
+                return False
+        else:
+            if not val:
+                return False
+
+    return True
 
 
 def count_intake_questions(conversation_history: list) -> int:

@@ -57,6 +57,7 @@ class SessionResponse(BaseModel):
     confidenceScore: int | None
     createdAt: str
     lastAccessedAt: str
+    extractedFacts: dict | None = None
 
 
 # Endpoints
@@ -150,7 +151,8 @@ async def get_session(
         safetyFlagged=session["safetyFlagged"],
         confidenceScore=session["confidenceScore"],
         createdAt=session["createdAt"],
-        lastAccessedAt=session["lastAccessedAt"]
+        lastAccessedAt=session["lastAccessedAt"],
+        extractedFacts=session.get("extractedFacts")
     )
 
 
