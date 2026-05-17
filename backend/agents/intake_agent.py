@@ -10,10 +10,25 @@ Ends every session with an open "anything else?" question.
 import os
 import json
 import re
+import logging
 from datetime import date, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Module-level constant for language mapping
+LANGUAGE_MAP = {
+    "en": "English",
+    "hi": "Hindi",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "kn": "Kannada",
+    "mr": "Marathi",
+    "bn": "Bengali",
+    "gu": "Gujarati"
+}
+
+logger = logging.getLogger(__name__)
 
 WATSONX_API_KEY = os.getenv("IBM_WATSONX_API_KEY")
 WATSONX_PROJECT_ID = os.getenv("IBM_WATSONX_PROJECT_ID")
@@ -479,8 +494,10 @@ def get_bob_model():
 
 def build_watsonx_prompt(session: dict, user_message: str, formatted_history: str,
                           category: str, required_fields: list, facts: dict) -> str:
-    _LANG_MAP = {"en": "English", "hi": "Hindi", "ta": "Tamil", "te": "Telugu", "kn": "Kannada", "mr": "Marathi", "bn": "Bengali", "gu": "Gujarati"}
-    lang_name = _LANG_MAP.get(session.get('language', 'en'), 'English')
+    language_code = session.get('language', 'en')
+    if language_code not in LANGUAGE_MAP:
+        logger.warning(f"Unsupported language code: {language_code}, defaulting to English")
+    lang_name = LANGUAGE_MAP.get(language_code, 'English')
     party_note = (
         "partyName IS required — ask for it when missing."
         if "partyName" in required_fields
@@ -928,13 +945,15 @@ async def process_intake(session: dict, user_message: str, formatted_history: st
         try:
             model = get_bob_model()
             if model:
-                _lang_map = {"en": "English", "hi": "Hindi", "ta": "Tamil", "te": "Telugu", "kn": "Kannada", "mr": "Marathi", "bn": "Bengali", "gu": "Gujarati"}
-                _lang_name = _lang_map.get(session.get('language', 'en'), 'English')
+                language_code = session.get('language', 'en')
+                if language_code not in LANGUAGE_MAP:
+                    logger.warning(f"Unsupported language code: {language_code}, defaulting to English")
+                lang_name = LANGUAGE_MAP.get(language_code, 'English')
                 prompt = f"""{INTAKE_SYSTEM_PROMPT}
 
 === Current Session ===
-Language: {session.get('language', 'en')} ({_lang_name})
-IMPORTANT: You MUST write your "reply" field ONLY in {_lang_name}. No other language is acceptable.
+Language: {session.get('language', 'en')} ({lang_name})
+IMPORTANT: You MUST write your "reply" field ONLY in {lang_name}. No other language is acceptable.
 State: {session.get('state', 'KA')}
 
 {formatted_history}

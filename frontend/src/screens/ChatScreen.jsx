@@ -45,7 +45,7 @@ const ChatScreen = () => {
     setLanguage(storeLanguage || 'en');
     // Send initial greeting
     sendInitialGreeting(sessionId);
-  }, []);
+  }, [sessionId, storeLanguage, navigate]);
 
   const sendInitialGreeting = async (sid) => {
     setIsTyping(true);

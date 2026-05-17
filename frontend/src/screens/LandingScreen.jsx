@@ -18,7 +18,8 @@ const Landing = () => {
     if (sessionId) {
       resetSession();
     }
-  }, []); // ← runs once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ← runs once on mount, intentionally ignoring sessionId to avoid re-triggering
 
   const states = [
     { code: 'KA', name: 'Karnataka' },
