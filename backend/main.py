@@ -6,6 +6,9 @@ FastAPI application with IBM watsonx integration.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from routers import chat
+
+
 import os
 from dotenv import load_dotenv
 
@@ -15,10 +18,6 @@ from routers.legal import router as legal_router
 
 # Import utilities
 from session import session_store
-
-# Import agents for test endpoint
-from agents.classifier_agent import classify_issue
-from agents.analysis_agent import analyze_rights
 
 # Load environment variables
 load_dotenv()
@@ -34,18 +33,18 @@ async def lifespan(app: FastAPI):
     Lifespan context manager for startup and shutdown events.
     """
     # Startup
-    print("🚀 Starting Court in Your Pocket API...")
-    print(f"📡 Frontend URL: {FRONTEND_URL}")
-    print(f"🔧 Backend Port: {BACKEND_PORT}")
+    print("[STARTUP] Starting Court in Your Pocket API...")
+    print(f"[STARTUP] Frontend URL: {FRONTEND_URL}")
+    print(f"[STARTUP] Backend Port: {BACKEND_PORT}")
     
     # Cleanup expired sessions on startup
     cleaned = session_store.cleanup_expired_sessions()
-    print(f"🧹 Cleaned up {cleaned} expired sessions")
+    print(f"[STARTUP] Cleaned up {cleaned} expired sessions")
     
     yield
     
     # Shutdown
-    print("👋 Shutting down Court in Your Pocket API...")
+    print("[SHUTDOWN] Court in Your Pocket API shutting down...")
 
 
 # Initialize FastAPI app
@@ -68,7 +67,7 @@ app.add_middleware(
 # Include routers
 app.include_router(session.router)
 app.include_router(legal_router)
-
+app.include_router(chat.router)
 
 # Root endpoint
 @app.get("/", tags=["health"])
@@ -94,52 +93,6 @@ def health_check():
         "status": "healthy",
         "active_sessions": session_store.get_session_count(),
         "service": "Court in Your Pocket API"
-    }
-
-
-# Test agents endpoint with language support
-@app.get("/test-agents", tags=["testing"])
-async def test_agents(language: str = "en"):
-    """
-    Test endpoint for agents with language support
-    
-    Query Parameters:
-        language: Language code (en, hi, ta, te, kn, mr, bn). Default: en
-    
-    Examples:
-        /test-agents (English - default)
-        /test-agents?language=hi (Hindi)
-        /test-agents?language=ta (Tamil)
-        /test-agents?language=te (Telugu)
-        /test-agents?language=kn (Kannada)
-        /test-agents?language=mr (Marathi)
-        /test-agents?language=bn (Bengali)
-    """
-    facts = {
-        "issue": "landlord not returning security deposit",
-        "location": "Bangalore",
-        "amount": "4000",
-        "dates": ["2026-03-15"],
-        "partyName": "Mr. Sharma"
-    }
-
-    sample_law = [{
-        "law_name": "Model Tenancy Act",
-        "section": "Section 11",
-        "plain_english": "Landlord must return deposit within 1 month",
-        "exact_quote": "The landlord shall refund the security deposit...",
-        "deadline_days": 90,
-        "last_verified": "2026-01-01",
-        "source_url": "https://indiacode.nic.in/..."
-    }]
-
-    classifier_result = await classify_issue(facts)
-    analysis_result = await analyze_rights(facts, sample_law, language)
-
-    return {
-        "language": language,
-        "classifier": classifier_result,
-        "analysis": analysis_result
     }
 
 
