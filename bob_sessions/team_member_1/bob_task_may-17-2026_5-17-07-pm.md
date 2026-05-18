@@ -534,8 +534,8 @@ Good! I can see there's a `.env` file in the backend directory. Let me check the
 <file><path>backend/.env.example</path>
 <content lines="1-7">
 1 | # IBM watsonx credentials
-2 | WATSONX_API_KEY=7EGMIdgns3ZsRXLzrTDdYnnYhcVzAO79xk9ta-gKBYFa
-3 | WATSONX_PROJECT_ID=92645b3a-acb2-4373-946f-ed5a043c5c82
+2 | WATSONX_API_KEY=api_key
+3 | WATSONX_PROJECT_ID=project_id
 4 | WATSONX_URL=https://us-south.ml.cloud.ibm.com
 5 | 
 6 | # Application settings
