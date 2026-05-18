@@ -578,7 +578,7 @@ Good! I can see that a `.env` file already exists. Let me check its contents to 
 <file><path>backend/.env</path>
 <content lines="1-9">
 1 | # OpenAI Configuration
-2 | OPENAI_API_KEY=_jHZMIjQ3ajM6jxQJJe4LwixQ_WzMozQZzeS_UNEu6Rd
+2 | OPENAI_API_KEY=_api_key
 3 | 
 4 | # Server Configuration (Optional)
 5 | HOST=0.0.0.0
@@ -626,7 +626,7 @@ Perfect! I found the issue. Your `.env` file has `OPENAI_API_KEY` but the code i
 :start_line:1
 -------
 # OpenAI Configuration
-OPENAI_API_KEY=_jHZMIjQ3ajM6jxQJJe4LwixQ_WzMozQZzeS_UNEu6Rd
+OPENAI_API_KEY=_api_key
 
 # Server Configuration (Optional)
 =======
